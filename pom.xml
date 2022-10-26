@@ -7,8 +7,8 @@
 		<version>2.7.3</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>it.finanze.sanita.fse2.dr-data-quality</groupId>
-	<artifactId>eds-dr-data-quality-ms</artifactId>
+	<groupId>it.finanze.sanita.fse2</groupId>
+	<artifactId>dr-data-quality-ms</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>eds-dr-data-quality</name>
 	<description>EDS Data Quality Service</description>
