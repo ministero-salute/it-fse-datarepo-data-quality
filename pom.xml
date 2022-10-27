@@ -8,10 +8,11 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>it.finanze.sanita.fse2</groupId>
-	<artifactId>dr-data-quality-ms</artifactId>
+	<artifactId>datarepo-data-quality-ms</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>eds-dr-data-quality</name>
+	<name>datarepo-data-quality-ms</name>
 	<description>EDS Data Quality Service</description>
+	
 	<properties>
 		<java.version>1.8</java.version>
 		<spring-cloud.version>2021.0.1</spring-cloud.version>
