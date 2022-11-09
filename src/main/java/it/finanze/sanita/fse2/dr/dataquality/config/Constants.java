@@ -5,7 +5,6 @@ package it.finanze.sanita.fse2.dr.dataquality.config;
 
 /**
  * 
- * @author vincenzoingenito
  *
  * Constants application.
  */
