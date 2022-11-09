@@ -1,3 +1,6 @@
+/*
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
 package it.finanze.sanita.fse2.dr.dataquality.client.exceptions;
 
 public class BusinessException extends RuntimeException {
