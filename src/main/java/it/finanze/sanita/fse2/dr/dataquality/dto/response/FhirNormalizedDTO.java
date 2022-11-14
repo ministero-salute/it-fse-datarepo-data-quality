@@ -14,7 +14,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FhirNormalizedDTO extends AbstractDTO {
+	
+	/**
+	 * Serial version uid.
+	 */
+	private static final long serialVersionUID = 5101143584909736125L;
+	
 	private String masterIdentifier;
+	
 	private String jsonString;
+	
 	private boolean normalized;
 }

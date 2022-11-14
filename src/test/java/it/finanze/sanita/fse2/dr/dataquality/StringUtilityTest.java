@@ -18,12 +18,11 @@ import it.finanze.sanita.fse2.dr.dataquality.utility.StringUtility;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ComponentScan(basePackages = { Constants.ComponentScan.BASE })
 @ActiveProfiles(Constants.Profile.TEST)
-public class StringUtilityTest {
+class StringUtilityTest {
 
 	@Test
 	@DisplayName("ReplaceChar")
 	void testCharReplacement() {
-
 		assertEquals("Pippi", StringUtility.charReplacement('o', 'i', "Pippo"));
 	}
 
