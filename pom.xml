@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>it.finanze.sanita.fse2</groupId>
 	<artifactId>datarepo-data-quality-ms</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.2.0-SNAPSHOT</version> <!-- IPPOCRATE -->
 	<name>datarepo-data-quality-ms</name>
 	<description>EDS Data Quality Service</description>
 
