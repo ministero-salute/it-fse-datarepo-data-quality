@@ -5,9 +5,7 @@ import org.hl7.fhir.instance.model.api.IBaseResource;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.narrative.DefaultThymeleafNarrativeGenerator;
 import ca.uhn.fhir.parser.IParser;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class FHIRR4Helper {
 
 	private static FhirContext context;
