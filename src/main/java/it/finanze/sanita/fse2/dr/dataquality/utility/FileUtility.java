@@ -6,7 +6,7 @@ package it.finanze.sanita.fse2.dr.dataquality.utility;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
-import it.finanze.sanita.fse2.dr.dataquality.client.exceptions.BusinessException;
+import it.finanze.sanita.fse2.dr.dataquality.exceptions.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 
 /**
