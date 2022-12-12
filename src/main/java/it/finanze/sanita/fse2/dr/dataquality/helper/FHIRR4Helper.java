@@ -7,13 +7,15 @@ import ca.uhn.fhir.narrative.DefaultThymeleafNarrativeGenerator;
 import ca.uhn.fhir.parser.IParser;
 
 public class FHIRR4Helper {
-
+	
 	private static FhirContext context;
 
 	static {
 		context = FhirContext.forR4();
 		getContext().setNarrativeGenerator(new DefaultThymeleafNarrativeGenerator());
 	}
+	
+	private FHIRR4Helper() {}
 
 	
 	public static String serializeResource(IBaseResource resource, Boolean flagPrettyPrint, Boolean flagSuppressNarratives, Boolean flagSummaryMode) {

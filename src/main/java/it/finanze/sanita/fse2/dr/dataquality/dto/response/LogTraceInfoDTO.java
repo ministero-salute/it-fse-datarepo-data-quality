@@ -3,26 +3,20 @@
  */
 package it.finanze.sanita.fse2.dr.dataquality.dto.response;
 
-import it.finanze.sanita.fse2.dr.dataquality.dto.AbstractDTO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class LogTraceInfoDTO extends AbstractDTO {
+public class LogTraceInfoDTO {
 
 	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -8439618140217305430L;
-
-	/**
-	 * Span.
+	 * Span id.
 	 */
 	private final String spanID;
 	
 	/**
-	 * Trace.
+	 * Trace id.
 	 */
 	private final String traceID;
 

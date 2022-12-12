@@ -9,7 +9,6 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 import org.springdoc.core.customizers.OpenApiCustomiser;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -27,15 +26,13 @@ import io.swagger.v3.oas.models.servers.Server;
 @Configuration
 public class OpenApiCFG {
 
-	@Autowired
-	private CustomSwaggerCFG customOpenapi;
 
 	public OpenApiCFG() {
 		// Empty constructor.
 	}
 
 	@Bean
-	public OpenApiCustomiser openApiCustomiser() {
+	public OpenApiCustomiser openApiCustomiser(final CustomSwaggerCFG customOpenapi) {
 
 		final List<String> required = new ArrayList<>();
 		required.add("file");
@@ -72,11 +69,11 @@ public class OpenApiCFG {
 			});
 
 			openApi.getPaths().values().stream().map(item -> getFileSchema(item)).filter(Objects::nonNull)
-					.forEach(schema -> {
-						schema.additionalProperties(false);
-						schema.getProperties().get("file").setMaxLength(customOpenapi.getFileMaxLength());
-						schema.required(required);
-					});
+			.forEach(schema -> {
+				schema.additionalProperties(false);
+				schema.getProperties().get("file").setMaxLength(customOpenapi.getFileMaxLength());
+				schema.required(required);
+			});
 		};
 	}
 
@@ -125,7 +122,6 @@ public class OpenApiCFG {
 		Content content = body.getContent();
 		if (content == null)
 			return null;
-		MediaType mediaType = content.get(org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE);
-		return mediaType;
+		return content.get(org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE);
 	}
 }

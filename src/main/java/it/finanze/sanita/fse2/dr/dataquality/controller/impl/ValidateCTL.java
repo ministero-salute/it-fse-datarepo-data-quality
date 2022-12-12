@@ -20,7 +20,6 @@ public class ValidateCTL implements IValidateCTL {
 
 	@Autowired
 	private IValidationSRV validationSRV;
-	 
 	  
 	@Override
 	public ValidationResultDTO validateBundleNormativeR4(FhirOperationDTO requestBody,HttpServletRequest request) {

@@ -8,20 +8,7 @@ package it.finanze.sanita.fse2.dr.dataquality.config;
  */
 public final class Constants {
 
-	/**
-	 *	Path scan.
-	 */
-	public static final class ComponentScan {
-
-		public static final String BASE = "it.finanze.sanita.fse2.dr.dataquality";
-
-		private ComponentScan() {
-			//This method is intentionally left blank.
-		}
-
-	}
-
-
+ 
 	public static final class Profile {
 		
 		public static final String TEST = "test";
@@ -38,7 +25,6 @@ public final class Constants {
 		}
 
 	}
-   
 
 	/**
 	 *	Constants.
