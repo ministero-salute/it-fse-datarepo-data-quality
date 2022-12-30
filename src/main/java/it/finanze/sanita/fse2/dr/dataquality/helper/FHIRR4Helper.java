@@ -8,7 +8,7 @@ import ca.uhn.fhir.parser.IParser;
 
 public class FHIRR4Helper {
 	
-	private static FhirContext context;
+	private static final FhirContext context;
 
 	static {
 		context = FhirContext.forR4();

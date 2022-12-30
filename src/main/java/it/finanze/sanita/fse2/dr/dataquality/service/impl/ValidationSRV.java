@@ -3,6 +3,7 @@
  */
 package it.finanze.sanita.fse2.dr.dataquality.service.impl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.common.hapi.validation.support.CommonCodeSystemsTerminologyService;
 import org.hl7.fhir.common.hapi.validation.support.InMemoryTerminologyServerValidationSupport;
 import org.hl7.fhir.common.hapi.validation.support.ValidationSupportChain;
@@ -19,7 +20,6 @@ import ca.uhn.fhir.validation.ValidationResult;
 import it.finanze.sanita.fse2.dr.dataquality.dto.ValidationResultDTO;
 import it.finanze.sanita.fse2.dr.dataquality.helper.FHIRR4Helper;
 import it.finanze.sanita.fse2.dr.dataquality.service.IValidationSRV;
-import it.finanze.sanita.fse2.dr.dataquality.utility.StringUtility;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -50,7 +50,7 @@ public class ValidationSRV implements IValidationSRV {
 				}
 			}
 
-			if(StringUtility.isNullOrEmpty(sb.toString())) {
+			if(StringUtils.isEmpty(sb.toString())) {
 				esitoValidazione = true;
 			}
 

@@ -1,12 +1,11 @@
 /*
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-package it.finanze.sanita.fse2.dr.dataquality.utility;
+package it.finanze.sanita.fse2.dr.dataquality;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
-import it.finanze.sanita.fse2.dr.dataquality.exceptions.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -51,7 +50,7 @@ public final class FileUtility {
 	 *            input stream
 	 * @return contenuto file
 	 */
-	private static byte[] getByteFromInputStream(final InputStream is) {
+	private static byte[] getByteFromInputStream(final InputStream is) throws Exception {
 		byte[] b;
 		try {
 			ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -65,7 +64,7 @@ public final class FileUtility {
 			b = buffer.toByteArray();
 		} catch (Exception e) {
 			log.error("Errore durante il trasform da InputStream a byte[]: ", e);
-			throw new BusinessException(e);
+			throw new Exception(e);
 		}
 		return b;
 	}
