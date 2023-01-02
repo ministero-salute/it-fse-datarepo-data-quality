@@ -1,3 +1,6 @@
+/*
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
 package it.finanze.sanita.fse2.dr.dataquality.helper;
 
 import org.hl7.fhir.instance.model.api.IBaseResource;
@@ -8,7 +11,7 @@ import ca.uhn.fhir.parser.IParser;
 
 public class FHIRR4Helper {
 	
-	private static final FhirContext context;
+	private static FhirContext context;
 
 	static {
 		context = FhirContext.forR4();

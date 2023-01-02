@@ -1,7 +1,7 @@
 /*
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-package it.finanze.sanita.fse2.dr.dataquality;
+package it.finanze.sanita.fse2.dr.dataquality.utility;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;

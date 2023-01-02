@@ -64,9 +64,7 @@ public class OpenApiCFG {
 				}
 			}
 
-			openApi.getComponents().getSchemas().values().forEach(schema -> {
-				schema.setAdditionalProperties(false);
-			});
+			openApi.getComponents().getSchemas().values().forEach(schema -> schema.setAdditionalProperties(false));
 
 			openApi.getPaths().values().stream().map(item -> getFileSchema(item)).filter(Objects::nonNull)
 			.forEach(schema -> {

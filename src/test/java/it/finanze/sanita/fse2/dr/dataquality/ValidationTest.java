@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.nio.charset.StandardCharsets;
 
 import it.finanze.sanita.fse2.dr.dataquality.helper.FHIRR4Helper;
+import it.finanze.sanita.fse2.dr.dataquality.utility.FileUtility;
 import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.r4.model.Bundle;
 import org.junit.jupiter.api.Test;
