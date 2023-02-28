@@ -3,11 +3,15 @@
  */
 package it.finanze.sanita.fse2.dr.dataquality.service.impl;
 
-import org.apache.commons.lang3.StringUtils;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.hl7.fhir.common.hapi.validation.support.CommonCodeSystemsTerminologyService;
 import org.hl7.fhir.common.hapi.validation.support.InMemoryTerminologyServerValidationSupport;
 import org.hl7.fhir.common.hapi.validation.support.ValidationSupportChain;
 import org.hl7.fhir.common.hapi.validation.validator.FhirInstanceValidator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ca.uhn.fhir.context.FhirContext;
@@ -15,10 +19,10 @@ import ca.uhn.fhir.context.support.DefaultProfileValidationSupport;
 import ca.uhn.fhir.validation.FhirValidator;
 import ca.uhn.fhir.validation.IValidatorModule;
 import ca.uhn.fhir.validation.ResultSeverityEnum;
-import ca.uhn.fhir.validation.SingleValidationMessage;
 import ca.uhn.fhir.validation.ValidationResult;
 import it.finanze.sanita.fse2.dr.dataquality.dto.ValidationResultDTO;
 import it.finanze.sanita.fse2.dr.dataquality.helper.FHIRR4Helper;
+import it.finanze.sanita.fse2.dr.dataquality.service.IGraphSRV;
 import it.finanze.sanita.fse2.dr.dataquality.service.IValidationSRV;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,41 +30,71 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ValidationSRV implements IValidationSRV {
 
-	 
+	@Autowired
+	private IGraphSRV graphSRV;
+	
 	@Override
-	public ValidationResultDTO validateBundleNormativeR4(final String bundle) {
-		ValidationResultDTO output = new ValidationResultDTO();
-		boolean esitoValidazione = false;
-		StringBuilder sb = new StringBuilder();
+	public ValidationResultDTO validateBundle(String jsonBundle) {		
+		ValidationResultDTO result = new ValidationResultDTO();
+//		result.getInvalidHttpMethods().addAll(validateHttpMethods(bundle));
+		result.getNormativeR4Messages().addAll(validateNormativeR4(jsonBundle));
+		result.getNotTraversedResources().addAll(traverseGraph(jsonBundle));
+		log.info("Data Quality validation finished. Valid: " + result.isValid());
+		return result;
+	}
+	
+	private List<String> traverseGraph(String jsonBundle) {
+		return graphSRV.traverseGraph(jsonBundle);
+	}
+
+	private List<String> validateNormativeR4(final String bundle) {
 		try {
-			FhirContext context =  FHIRR4Helper.getContext();
-			ValidationSupportChain validationSupportChain = new ValidationSupportChain(
-					new DefaultProfileValidationSupport(context),
-					new InMemoryTerminologyServerValidationSupport(context),
-					new CommonCodeSystemsTerminologyService(context));
-
-			FhirValidator validator = context.newValidator();
-			IValidatorModule module = new FhirInstanceValidator(validationSupportChain);
-			validator.registerValidatorModule(module);
-
-			ValidationResult result = validator.validateWithResult(bundle);
-			for(SingleValidationMessage msg : result.getMessages()) {
-				if(ResultSeverityEnum.ERROR.equals(msg.getSeverity()) || ResultSeverityEnum.FATAL.equals(msg.getSeverity())) {
-					sb.append(String.format("Severity: %s Message: %s", msg.getSeverity().getCode(),msg.getMessage()));
-				}
-			}
-
-			if(StringUtils.isEmpty(sb.toString())) {
-				esitoValidazione = true;
-			}
-
-			output.setMessage(sb.toString());
-			output.setValid(esitoValidazione);
-
+			ValidationResult result = getValidator().validateWithResult(bundle);
+			return getMessages(result);
 		} catch(Exception ex) {
 			log.error("Error while perform validate bundle normative R4 : " , ex);
-			output.setMessage(ex.getMessage());
+			return Arrays.asList(ex.getMessage());
 		}
-		return output;
 	}
-}
+
+	private List<String> getMessages(ValidationResult result) {
+		List<ResultSeverityEnum> errors = Arrays.asList(ResultSeverityEnum.ERROR, ResultSeverityEnum.FATAL);
+		return result
+				.getMessages()
+				.stream()
+				.filter(msg -> errors.contains(msg.getSeverity()))
+				.map(msg -> String.format("Severity: %s Message: %s", msg.getSeverity().getCode(),msg.getMessage()))
+				.collect(Collectors.toList());
+	}
+	
+	private FhirValidator getValidator() {
+		FhirContext context =  FHIRR4Helper.getContext();
+		ValidationSupportChain validationSupportChain = new ValidationSupportChain(
+				new DefaultProfileValidationSupport(context),
+				new InMemoryTerminologyServerValidationSupport(context),
+				new CommonCodeSystemsTerminologyService(context));
+
+		FhirValidator validator = context.newValidator();
+		IValidatorModule module = new FhirInstanceValidator(validationSupportChain);
+		validator.registerValidatorModule(module);
+		return validator;
+	}
+
+//	private List<String> validateHttpMethods(Bundle bundle) {
+//		return bundle
+//				.getEntry()
+//				.stream()
+//				.filter(entry -> hasPutMethod(entry))
+//				.filter(entry -> StringUtils.isBlank(entry.getRequest().getUrl()))
+//				.map(entry -> entry.getFullUrl())
+//				.collect(Collectors.toList());
+//	}
+//
+//	private boolean hasPutMethod(BundleEntryComponent entry) {
+//		if (entry.getRequest() == null) return false;
+//		if (entry.getRequest().getMethod() == null) return false;
+//		return entry.getRequest().getMethod() == HTTPVerb.PUT;
+//	}
+
+	
+ }

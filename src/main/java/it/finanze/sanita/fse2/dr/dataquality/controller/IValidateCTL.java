@@ -23,12 +23,12 @@ import it.finanze.sanita.fse2.dr.dataquality.dto.request.FhirOperationDTO;
 @Tag(name = "Validazione")
 public interface IValidateCTL {
  
-	@Operation(summary = "Validazione bundle", description = "Validazione bundle R4 normative")
+	@Operation(summary = "Validazione bundle", description = "Validazione bundle")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Bundle validato", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ValidationResultDTO.class))),
 			@ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = ValidationResultDTO.class))),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = ValidationResultDTO.class))) })
 	@PostMapping("/validate-bundle")
-	ValidationResultDTO validateBundleNormativeR4(@RequestBody FhirOperationDTO requestBody, HttpServletRequest request);
+	ValidationResultDTO validateBundle(@RequestBody FhirOperationDTO requestBody, HttpServletRequest request);
  
 }
