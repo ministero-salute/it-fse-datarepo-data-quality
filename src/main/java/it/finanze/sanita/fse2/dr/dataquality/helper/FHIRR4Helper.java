@@ -8,6 +8,8 @@ import org.hl7.fhir.instance.model.api.IBaseResource;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.narrative.DefaultThymeleafNarrativeGenerator;
 import ca.uhn.fhir.parser.IParser;
+import ca.uhn.fhir.rest.client.api.IGenericClient;
+import ca.uhn.fhir.rest.client.interceptor.BasicAuthInterceptor;
 
 public class FHIRR4Helper {
 	
@@ -40,6 +42,12 @@ public class FHIRR4Helper {
 		return (T) parser.parseResource(resourceClass, input);
 	}
 
+	public static IGenericClient createClient(final String serverURL, final String username, final String pwd) {
+		IGenericClient client = context.newRestfulGenericClient(serverURL);
+		client.registerInterceptor(new BasicAuthInterceptor(username, pwd));
+		return client;
+	}
+	
 	public static FhirContext getContext() {
 		return context;
 	}

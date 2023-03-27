@@ -37,7 +37,7 @@ class ValidationTest {
 		String bundle = new String(FileUtility.getFileFromInternalResources("Referto_di_Laboratorio_caso_semplice.json"), StandardCharsets.UTF_8);
 		final Bundle bundleDes = FHIRR4Helper.deserializeResource(Bundle.class, bundle, true);
 		log.info(FHIRR4Helper.serializeResource(bundleDes, true, false, false));
-		ValidationResultDTO validationResult = validationSRV.validateBundleNormativeR4(bundle);
+		ValidationResultDTO validationResult = validationSRV.validateBundle(bundle);
 		assertTrue(validationResult.isValid());
 	}
 }

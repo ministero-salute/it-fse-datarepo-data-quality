@@ -27,6 +27,31 @@ public final class Constants {
 	}
 
 	/**
+	 * Constants used in logging. 
+	 *
+	 */	
+	public static final class Logs {
+
+		/**
+		 * When a Connection Refused Error occurs 
+		 */
+        public static final String ERROR_CONNECTION_REFUSED = "Error: Connection refused";
+
+        /**
+         * Srv Query Response Log 
+         */
+		public static final String SRV_QUERY_RESPONSE = "{} status returned from eds";
+
+		/**
+		 * This method is intentionally left blank 
+		 */
+        private Logs() {
+
+        }
+
+	}
+  
+	/**
 	 *	Constants.
 	 */
 	private Constants() {

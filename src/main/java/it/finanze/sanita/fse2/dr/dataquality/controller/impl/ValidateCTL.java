@@ -22,9 +22,9 @@ public class ValidateCTL implements IValidateCTL {
 	private IValidationSRV validationSRV;
 	  
 	@Override
-	public ValidationResultDTO validateBundleNormativeR4(FhirOperationDTO requestBody,HttpServletRequest request) {
-		log.info("Call validate bundle normative R4");
-		return validationSRV.validateBundleNormativeR4(requestBody.getJsonString());
+	public ValidationResultDTO validateBundle(FhirOperationDTO requestBody,HttpServletRequest request) {
+		log.info("Call validate bundle");
+		return validationSRV.validateBundle(requestBody.getJsonString());
 	}
 
 }
