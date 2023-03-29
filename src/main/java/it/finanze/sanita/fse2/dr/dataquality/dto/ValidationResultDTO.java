@@ -8,15 +8,9 @@ import java.util.List;
 
 public class ValidationResultDTO {
 
-	private List<String> invalidHttpMethods;
 	private List<String> normativeR4Messages;
 	private List<String> notTraversedResources;
 
-	public List<String> getInvalidHttpMethods() {
-		if (invalidHttpMethods == null) invalidHttpMethods = new ArrayList<>();
-		return invalidHttpMethods;
-	}
-	
 	public List<String> getNormativeR4Messages() {
 		if (normativeR4Messages == null) normativeR4Messages = new ArrayList<>();
 		return normativeR4Messages;
@@ -28,7 +22,7 @@ public class ValidationResultDTO {
 	}
 	
 	public boolean isValid() {
-		return getInvalidHttpMethods().isEmpty() && getNormativeR4Messages().isEmpty() && getNotTraversedResources().isEmpty();
+		return getNormativeR4Messages().isEmpty() && getNotTraversedResources().isEmpty();
 	}
 	
 	public String getMessage() {
