@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import it.finanze.sanita.fse2.dr.dataquality.config.BundleCFG;
 import org.hl7.fhir.common.hapi.validation.support.CommonCodeSystemsTerminologyService;
 import org.hl7.fhir.common.hapi.validation.support.InMemoryTerminologyServerValidationSupport;
 import org.hl7.fhir.common.hapi.validation.support.ValidationSupportChain;
@@ -31,14 +32,21 @@ import lombok.extern.slf4j.Slf4j;
 public class ValidationSRV implements IValidationSRV {
 
 	@Autowired
+	private BundleCFG bundleCFG;
+
+	@Autowired
 	private IGraphSRV graphSRV;
 	
 	@Override
 	public ValidationResultDTO validateBundle(String jsonBundle) {		
 		ValidationResultDTO result = new ValidationResultDTO();
-//		result.getInvalidHttpMethods().addAll(validateHttpMethods(bundle));
+		// result.getInvalidHttpMethods().addAll(validateHttpMethods(bundle));
 		result.getNormativeR4Messages().addAll(validateNormativeR4(jsonBundle));
-		result.getNotTraversedResources().addAll(traverseGraph(jsonBundle));
+		if(bundleCFG.isTraverseResources()) {
+			result.getNotTraversedResources().addAll(traverseGraph(jsonBundle));
+		} else {
+			log.debug("Skipping traversing bundle resources");
+		}
 		log.info("Data Quality validation finished. Valid: " + result.isValid());
 		return result;
 	}
