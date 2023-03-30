@@ -5,6 +5,7 @@ package it.finanze.sanita.fse2.dr.dataquality.controller.impl;
 
 import javax.servlet.http.HttpServletRequest;
 
+import it.finanze.sanita.fse2.dr.dataquality.dto.tools.RunSchedulerDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 

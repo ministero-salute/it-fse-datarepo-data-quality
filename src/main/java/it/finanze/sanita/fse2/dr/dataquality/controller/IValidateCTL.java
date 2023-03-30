@@ -5,6 +5,7 @@ package it.finanze.sanita.fse2.dr.dataquality.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import it.finanze.sanita.fse2.dr.dataquality.dto.tools.RunSchedulerDTO;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,7 +28,8 @@ public interface IValidateCTL {
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Bundle validato", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ValidationResultDTO.class))),
 			@ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = ValidationResultDTO.class))),
-			@ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = ValidationResultDTO.class))) })
+			@ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = ValidationResultDTO.class)))
+	})
 	@PostMapping("/validate-bundle")
 	ValidationResultDTO validateBundle(@RequestBody FhirOperationDTO requestBody, HttpServletRequest request);
  
