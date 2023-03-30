@@ -1,5 +1,6 @@
 package it.finanze.sanita.fse2.dr.dataquality.scheduler;
 
+import it.finanze.sanita.fse2.dr.dataquality.dto.SearchParamsResponseDTO;
 import it.finanze.sanita.fse2.dr.dataquality.service.impl.SearchParamVerifierSRV;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
@@ -47,5 +48,9 @@ public class SearchParamScheduler {
 
     public boolean isRunning() {
         return running;
+    }
+
+    public SearchParamsResponseDTO status() {
+        return service.getParams();
     }
 }

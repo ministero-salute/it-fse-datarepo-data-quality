@@ -1,6 +1,7 @@
 package it.finanze.sanita.fse2.dr.dataquality.controller.impl;
 
 import it.finanze.sanita.fse2.dr.dataquality.controller.ISchedulerCTL;
+import it.finanze.sanita.fse2.dr.dataquality.dto.SearchParamsResponseDTO;
 import it.finanze.sanita.fse2.dr.dataquality.dto.tools.RunSchedulerDTO;
 import it.finanze.sanita.fse2.dr.dataquality.exceptions.SchedulerRunningException;
 import it.finanze.sanita.fse2.dr.dataquality.scheduler.SearchParamScheduler;
@@ -24,5 +25,10 @@ public class SchedulerCTL extends AbstractCTL implements ISchedulerCTL {
         scheduler.asyncAction();
         // Meanwhile return response
         return new RunSchedulerDTO(getLogTraceInfo(), DTO_RUN_TASK_QUEUED);
+    }
+
+    @Override
+    public SearchParamsResponseDTO status() {
+        return scheduler.status();
     }
 }

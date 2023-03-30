@@ -43,5 +43,8 @@ public class SearchParamVerifierSRV implements ISearchParamVerifierSRV {
 				.stream()
 				.anyMatch(param -> param.getPath().equals(path));
 	}
-	
+
+	public SearchParamsResponseDTO getParams() {
+		return params;
+	}
 }
