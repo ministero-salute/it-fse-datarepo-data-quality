@@ -1,14 +1,9 @@
 package it.finanze.sanita.fse2.dr.dataquality.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@RequiredArgsConstructor
+@Getter
 public class SearchParamDTO {
-	private String name;
-	private String type;
-	private String path;
+	private final String path;
 }

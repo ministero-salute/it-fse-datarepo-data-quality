@@ -6,12 +6,12 @@ import it.finanze.sanita.fse2.dr.dataquality.dto.tools.RunSchedulerDTO;
 import it.finanze.sanita.fse2.dr.dataquality.exceptions.SchedulerRunningException;
 import it.finanze.sanita.fse2.dr.dataquality.scheduler.SearchParamScheduler;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
 import static it.finanze.sanita.fse2.dr.dataquality.config.Constants.Logs.DTO_RUN_TASK_QUEUED;
 import static it.finanze.sanita.fse2.dr.dataquality.config.Constants.Logs.ERR_SCH_RUNNING;
 
-@Controller
+@RestController
 public class SchedulerCTL extends AbstractCTL implements ISchedulerCTL {
 
     @Autowired

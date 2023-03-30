@@ -1,21 +1,16 @@
 package it.finanze.sanita.fse2.dr.dataquality.dto;
 
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
 public class SearchParamsResponseDTO {
-	private List<SearchParamResourceDTO> params;
-	
-	public List<SearchParamResourceDTO> getParams() {
-		if (params == null) params = new ArrayList<>();
-		return params;
+
+	private final List<SearchParamResourceDTO> params;
+
+	public SearchParamsResponseDTO() {
+		this.params = new ArrayList<>();
 	}
-	
 }

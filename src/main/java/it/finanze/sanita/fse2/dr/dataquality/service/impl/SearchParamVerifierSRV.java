@@ -33,15 +33,12 @@ public class SearchParamVerifierSRV implements ISearchParamVerifierSRV {
 		return params
 				.getParams()
 				.stream()
-				.filter(resource -> resource.getResourceName().equals(resourceType))
+				.filter(resource -> resource.getName().equals(resourceType))
 				.findFirst();
 	}
 
 	private boolean hasSearchParam(SearchParamResourceDTO resource, String path) {
-		return resource
-				.getParameters()
-				.stream()
-				.anyMatch(param -> param.getPath().equals(path));
+		return resource.getParameters().stream().anyMatch(p -> p.equals(path));
 	}
 
 	public SearchParamsResponseDTO getParams() {
