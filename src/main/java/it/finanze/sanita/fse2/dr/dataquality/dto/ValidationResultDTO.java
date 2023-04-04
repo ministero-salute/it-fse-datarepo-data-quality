@@ -24,6 +24,21 @@ public final class ValidationResultDTO {
 	}
 	
 	public String getMessage() {
-		return "";
+		String out = "The JSON bundle has been validated";
+		return isValid() ? out : getErrorMessage(normativeR4Messages, notTraversedResources);
+	}
+
+	private String getErrorMessage(List<String> normative, List<String> graph) {
+		StringBuilder sb = new StringBuilder("Unable to validate JSON bundle due to ");
+		if(!normative.isEmpty() && !graph.isEmpty()) {
+			sb.append("normative errors and untraversable bundle resources");
+		} else if(!normative.isEmpty()) {
+			sb.append("normative errors");
+		} else if(!graph.isEmpty()) {
+			sb.append("untraversable bundle resources");
+		} else {
+			sb.append("unknown reasons");
+		}
+		return sb.toString();
 	}
 }
