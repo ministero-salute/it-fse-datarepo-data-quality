@@ -24,7 +24,7 @@ public class GraphDTO {
 	public List<EdgeDTO> getEdgesWithSource(NodeDTO source) {
 		return getEdges()
 				.stream()
-				.filter(edge -> edge.getSource().equals(source.getId()))
+				.filter(edge -> edge.getSource().getId().equals(source.getId()))
 				.collect(Collectors.toList());
 	}
 	
