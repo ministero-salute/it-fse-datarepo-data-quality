@@ -11,7 +11,6 @@ import ca.uhn.fhir.validation.ResultSeverityEnum;
 import ca.uhn.fhir.validation.ValidationResult;
 import it.finanze.sanita.fse2.dr.dataquality.config.BundleCFG;
 import it.finanze.sanita.fse2.dr.dataquality.dto.ValidationResultDTO;
-import it.finanze.sanita.fse2.dr.dataquality.dto.graph.EdgeDTO;
 import it.finanze.sanita.fse2.dr.dataquality.helper.FHIRR4Helper;
 import it.finanze.sanita.fse2.dr.dataquality.service.IGraphSRV;
 import it.finanze.sanita.fse2.dr.dataquality.service.IValidationSRV;
@@ -41,12 +40,12 @@ public class ValidationSRV implements IValidationSRV {
 	@Override
 	public ValidationResultDTO validateBundle(String jsonBundle) {		
 		ValidationResultDTO result = new ValidationResultDTO();
-		result.getNormativeR4Messages().addAll(Arrays.asList("zozzone"));//validateNormativeR4(jsonBundle));
-		//result.getNotTraversedResources().addAll(traverseGraph(jsonBundle));
+		result.getNormativeR4Messages().addAll(validateNormativeR4(jsonBundle));
+		result.getNotTraversedResources().addAll(traverseGraph(jsonBundle));
 		return result;
 	}
 	
-	private List<EdgeDTO> traverseGraph(String jsonBundle) {
+	private List<String> traverseGraph(String jsonBundle) {
 		if(bundleCFG.isTraverseResources()) return graphSRV.traverseGraph(jsonBundle);
 		log.debug("Skipping traversing bundle resources");
 		return new ArrayList<>();

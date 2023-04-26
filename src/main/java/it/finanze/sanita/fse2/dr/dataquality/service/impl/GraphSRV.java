@@ -12,6 +12,7 @@ import org.hl7.fhir.r4.model.Bundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,7 +22,12 @@ public class GraphSRV implements IGraphSRV {
 	@Autowired
 	private ISearchParamVerifierSRV searchParamVerifierSRV;
 
-	public List<EdgeDTO> traverseGraph(String jsonBundle) {
+	public List<String> traverseGraph(String jsonBundle) {
+		List<EdgeDTO> edges = traverse(jsonBundle);
+		return new ArrayList<>();
+	}
+
+	private List<EdgeDTO> traverse(String jsonBundle) {
 		Bundle bundle = FHIRR4Helper.deserializeResource(Bundle.class, jsonBundle, true);
 		GraphDTO graph = createGraph(bundle);
 		DepthFirstSearchUtility.traverse(graph);
