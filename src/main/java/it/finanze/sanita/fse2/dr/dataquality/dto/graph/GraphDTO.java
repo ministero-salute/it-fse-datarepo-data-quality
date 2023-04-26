@@ -1,11 +1,11 @@
 package it.finanze.sanita.fse2.dr.dataquality.dto.graph;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
 
 @Data
 @AllArgsConstructor
@@ -27,6 +27,16 @@ public class GraphDTO {
 				.filter(edge -> edge.getSource().getId().equals(source.getId()))
 				.collect(Collectors.toList());
 	}
+
+	public EdgeDTO getEdge(NodeDTO source, NodeDTO target, String path) {
+		return getEdges()
+				.stream()
+				.filter(edge -> edge.getSource().getId().equals(source.getId()))
+				.filter(edge -> edge.getTarget().getId().equals(target.getId()))
+				.filter(edge -> edge.getPath().equals(path))
+				.findFirst()
+				.orElse(null);
+	}
 	
 	public List<NodeDTO> getNodes() {
 		if (nodes == null) nodes = new ArrayList<>();
@@ -38,11 +48,10 @@ public class GraphDTO {
 		return edges;
 	}
 
-	public List<String> getNotTraversedResources() {
-		return getNodes()
+	public List<EdgeDTO> getNotTraversedResources() {
+		return getEdges()
 				.stream()
-				.filter(node -> !node.isTraversed())
-				.map(NodeDTO::getId)
+				.filter(edge -> !edge.isTraversed())
 				.collect(Collectors.toList());
 	}
 
@@ -53,5 +62,18 @@ public class GraphDTO {
 				.findFirst()
 				.orElse(null);
 	}
+
+	public void setNodeTraversed(NodeDTO node) {
+		if (node == null) return;
+		NodeDTO nodeDTO = getNode(node.getId());
+		if (nodeDTO == null) return;
+		nodeDTO.setTraversed(true);
+	}
+    public void setEdgeTraversed(EdgeDTO edge) {
+		if (edge == null) return;
+		EdgeDTO edgeDTO = getEdge(edge.getSource(), edge.getTarget(), edge.getPath());
+		if (edgeDTO == null) return;
+		edgeDTO.setTraversed(true);
+    }
 
 }

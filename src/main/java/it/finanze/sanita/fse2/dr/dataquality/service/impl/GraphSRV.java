@@ -1,12 +1,5 @@
 package it.finanze.sanita.fse2.dr.dataquality.service.impl;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.hl7.fhir.r4.model.Bundle;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import it.finanze.sanita.fse2.dr.dataquality.dto.graph.EdgeDTO;
 import it.finanze.sanita.fse2.dr.dataquality.dto.graph.GraphDTO;
 import it.finanze.sanita.fse2.dr.dataquality.dto.graph.NodeDTO;
@@ -15,14 +8,20 @@ import it.finanze.sanita.fse2.dr.dataquality.service.IGraphSRV;
 import it.finanze.sanita.fse2.dr.dataquality.service.ISearchParamVerifierSRV;
 import it.finanze.sanita.fse2.dr.dataquality.utility.BundleUtility;
 import it.finanze.sanita.fse2.dr.dataquality.utility.DepthFirstSearchUtility;
+import org.hl7.fhir.r4.model.Bundle;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class GraphSRV implements IGraphSRV {
 
 	@Autowired
 	private ISearchParamVerifierSRV searchParamVerifierSRV;
-	
-	public List<String> traverseGraph(String jsonBundle) {
+
+	public List<EdgeDTO> traverseGraph(String jsonBundle) {
 		Bundle bundle = FHIRR4Helper.deserializeResource(Bundle.class, jsonBundle, true);
 		GraphDTO graph = createGraph(bundle);
 		DepthFirstSearchUtility.traverse(graph);
@@ -42,25 +41,26 @@ public class GraphSRV implements IGraphSRV {
 				.map(NodeDTO::new)
 				.collect(Collectors.toList());
 	}
-	
+
 	private List<EdgeDTO> getEdges(List<NodeDTO> nodes) {
 		return nodes
 				.stream()
 				.flatMap(node -> getEdges(node).stream())
 				.collect(Collectors.toList());
 	}
-	
+
 	private List<EdgeDTO> getEdges(NodeDTO node) {
 		return BundleUtility
 				.getAllReferences(node.getType(), node.getResource())
 				.stream()
 				.map(reference -> new EdgeDTO(node, reference))
-				.filter(edge -> isSearchParam(edge))
+				.peek(this::setSearchParam)
 				.collect(Collectors.toList());
 	}
 
-	private boolean isSearchParam(EdgeDTO edge) {
-		return searchParamVerifierSRV.isSearchParam(edge.getSource().getType(), edge.getPath());
+	private void setSearchParam(EdgeDTO edge) {
+		boolean searchParam = searchParamVerifierSRV.isSearchParam(edge.getSource().getType(), edge.getPath());
+		edge.setSearchParam(searchParam);
 	}
 
 }

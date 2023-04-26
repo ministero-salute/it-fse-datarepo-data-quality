@@ -3,11 +3,19 @@
  */
 package it.finanze.sanita.fse2.dr.dataquality.service.impl;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.context.support.DefaultProfileValidationSupport;
+import ca.uhn.fhir.validation.FhirValidator;
+import ca.uhn.fhir.validation.IValidatorModule;
+import ca.uhn.fhir.validation.ResultSeverityEnum;
+import ca.uhn.fhir.validation.ValidationResult;
 import it.finanze.sanita.fse2.dr.dataquality.config.BundleCFG;
+import it.finanze.sanita.fse2.dr.dataquality.dto.ValidationResultDTO;
+import it.finanze.sanita.fse2.dr.dataquality.dto.graph.EdgeDTO;
+import it.finanze.sanita.fse2.dr.dataquality.helper.FHIRR4Helper;
+import it.finanze.sanita.fse2.dr.dataquality.service.IGraphSRV;
+import it.finanze.sanita.fse2.dr.dataquality.service.IValidationSRV;
+import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.common.hapi.validation.support.CommonCodeSystemsTerminologyService;
 import org.hl7.fhir.common.hapi.validation.support.InMemoryTerminologyServerValidationSupport;
 import org.hl7.fhir.common.hapi.validation.support.ValidationSupportChain;
@@ -15,17 +23,10 @@ import org.hl7.fhir.common.hapi.validation.validator.FhirInstanceValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.context.support.DefaultProfileValidationSupport;
-import ca.uhn.fhir.validation.FhirValidator;
-import ca.uhn.fhir.validation.IValidatorModule;
-import ca.uhn.fhir.validation.ResultSeverityEnum;
-import ca.uhn.fhir.validation.ValidationResult;
-import it.finanze.sanita.fse2.dr.dataquality.dto.ValidationResultDTO;
-import it.finanze.sanita.fse2.dr.dataquality.helper.FHIRR4Helper;
-import it.finanze.sanita.fse2.dr.dataquality.service.IGraphSRV;
-import it.finanze.sanita.fse2.dr.dataquality.service.IValidationSRV;
-import lombok.extern.slf4j.Slf4j;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -40,19 +41,15 @@ public class ValidationSRV implements IValidationSRV {
 	@Override
 	public ValidationResultDTO validateBundle(String jsonBundle) {		
 		ValidationResultDTO result = new ValidationResultDTO();
-		// result.getInvalidHttpMethods().addAll(validateHttpMethods(bundle));
-		result.getNormativeR4Messages().addAll(validateNormativeR4(jsonBundle));
-		if(bundleCFG.isTraverseResources()) {
-			result.getNotTraversedResources().addAll(traverseGraph(jsonBundle));
-		} else {
-			log.debug("Skipping traversing bundle resources");
-		}
-		log.info("Data Quality validation finished. Valid: " + result.isValid());
+		result.getNormativeR4Messages().addAll(Arrays.asList("zozzone"));//validateNormativeR4(jsonBundle));
+		//result.getNotTraversedResources().addAll(traverseGraph(jsonBundle));
 		return result;
 	}
 	
-	private List<String> traverseGraph(String jsonBundle) {
-		return graphSRV.traverseGraph(jsonBundle);
+	private List<EdgeDTO> traverseGraph(String jsonBundle) {
+		if(bundleCFG.isTraverseResources()) return graphSRV.traverseGraph(jsonBundle);
+		log.debug("Skipping traversing bundle resources");
+		return new ArrayList<>();
 	}
 
 	private List<String> validateNormativeR4(final String bundle) {

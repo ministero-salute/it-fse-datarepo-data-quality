@@ -9,9 +9,15 @@ public class EdgeDTO {
 	private NodeDTO source;
 	private NodeDTO target;
 	private String path;
-	
+	private boolean traversed;
+	private boolean searchParam;
+
 	public EdgeDTO(NodeDTO source, ReferenceDTO reference) {
-		this(source, new NodeDTO(reference.getTarget()), reference.getPath());
+		this(source, new NodeDTO(reference.getTarget()), reference.getPath(), false, false);
+	}
+
+	public boolean isNotTraversed() {
+		return !traversed;
 	}
 	
 }
