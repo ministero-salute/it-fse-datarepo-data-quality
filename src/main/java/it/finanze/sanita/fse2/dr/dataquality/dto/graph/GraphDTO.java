@@ -10,9 +10,12 @@ import java.util.stream.Collectors;
 @Data
 @AllArgsConstructor
 public class GraphDTO {
+
+	private static final String START_NODE = "DocumentReference";
+
 	private List<NodeDTO> nodes;
 	private List<EdgeDTO> edges;
-	
+
 	public NodeDTO getNode(String id) {
 		return getNodes()
 				.stream()
@@ -20,24 +23,31 @@ public class GraphDTO {
 				.findFirst()
 				.orElse(null);
 	}
-	
+
 	public List<EdgeDTO> getEdgesWithSource(NodeDTO source) {
 		return getEdges()
 				.stream()
-				.filter(edge -> edge.getSource().getId().equals(source.getId()))
+				.filter(edge -> edge.getSource().equals(source))
 				.collect(Collectors.toList());
 	}
 
-	public EdgeDTO getEdge(NodeDTO source, NodeDTO target, String path) {
-		return getEdges()
+	public EdgeDTO getFirstNotTraversedEdge(NodeDTO source, NodeDTO target, String path) {
+		return getEdges(source, target, path)
 				.stream()
-				.filter(edge -> edge.getSource().getId().equals(source.getId()))
-				.filter(edge -> edge.getTarget().getId().equals(target.getId()))
-				.filter(edge -> edge.getPath().equals(path))
+				.filter(EdgeDTO::isNotTraversed)
 				.findFirst()
 				.orElse(null);
 	}
-	
+
+	public List<EdgeDTO> getEdges(NodeDTO source, NodeDTO target, String path) {
+		return getEdges()
+				.stream()
+				.filter(edge -> edge.hasSource(source))
+				.filter(edge -> edge.hasTarget(target))
+				.filter(edge -> edge.getPath().equals(path))
+				.collect(Collectors.toList());
+	}
+
 	public List<NodeDTO> getNodes() {
 		if (nodes == null) nodes = new ArrayList<>();
 		return nodes;
@@ -48,17 +58,19 @@ public class GraphDTO {
 		return edges;
 	}
 
-	public List<EdgeDTO> getNotTraversedResources() {
-		return getEdges()
-				.stream()
-				.filter(edge -> !edge.isTraversed())
-				.collect(Collectors.toList());
+	public List<IGraphResourceDTO> getNotTraversedResources() {
+		List<EdgeDTO> edges = getNotTraversedEdges();
+		List<NodeDTO> nodes = getNotTraversedNodes();
+		nodes.removeIf(node -> hasNode(edges, node));
+		List<IGraphResourceDTO> resources = new ArrayList<>(edges);
+		resources.addAll(nodes);
+		return resources;
 	}
 
-	public NodeDTO getDocumentReferenceNode() {
+	public NodeDTO getStartNode() {
 		return getNodes()
 				.stream()
-				.filter(node -> node.getId().contains("DocumentReference"))
+				.filter(node -> node.getId().contains(START_NODE))
 				.findFirst()
 				.orElse(null);
 	}
@@ -69,11 +81,32 @@ public class GraphDTO {
 		if (nodeDTO == null) return;
 		nodeDTO.setTraversed(true);
 	}
-    public void setEdgeTraversed(EdgeDTO edge) {
+
+	public void setEdgeTraversed(EdgeDTO edge) {
 		if (edge == null) return;
-		EdgeDTO edgeDTO = getEdge(edge.getSource(), edge.getTarget(), edge.getPath());
+		EdgeDTO edgeDTO = getFirstNotTraversedEdge(edge.getSource(), edge.getTarget(), edge.getPath());
 		if (edgeDTO == null) return;
 		edgeDTO.setTraversed(true);
-    }
+	}
+
+	private List<NodeDTO> getNotTraversedNodes() {
+		return getNodes()
+				.stream()
+				.filter(node -> !node.isTraversed())
+				.collect(Collectors.toList());
+	}
+
+	private List<EdgeDTO> getNotTraversedEdges() {
+		return getEdges()
+				.stream()
+				.filter(edge -> !edge.isTraversed())
+				.collect(Collectors.toList());
+	}
+
+	private boolean hasNode(List<EdgeDTO> edges, NodeDTO node) {
+		return edges
+				.stream()
+				.anyMatch(edge -> edge.hasSource(node) || edge.hasTarget(node));
+	}
 
 }

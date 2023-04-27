@@ -10,12 +10,8 @@ import java.util.stream.Collectors;
 public class DepthFirstSearchUtility {
 
 	public static void traverse(GraphDTO graph) {
-		NodeDTO start = graph.getDocumentReferenceNode();
-		applyDFS(start, graph);
-	}
-
-	private static void applyDFS(NodeDTO start, GraphDTO graph) {
-	    applyDFS(start, null, graph);
+		NodeDTO start = graph.getStartNode();
+		applyDFS(start, null, graph);
 	}
 
 	private static void applyDFS(NodeDTO currentNode, EdgeDTO fromEdge, GraphDTO graph) {

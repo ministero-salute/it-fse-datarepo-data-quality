@@ -38,7 +38,7 @@ public class ValidationSRV implements IValidationSRV {
 	private IGraphSRV graphSRV;
 	
 	@Override
-	public ValidationResultDTO validateBundle(String jsonBundle) {		
+	public ValidationResultDTO validateBundle(String jsonBundle) {
 		ValidationResultDTO result = new ValidationResultDTO();
 		result.getNormativeR4Messages().addAll(validateNormativeR4(jsonBundle));
 		result.getNotTraversedResources().addAll(traverseGraph(jsonBundle));

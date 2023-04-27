@@ -7,5 +7,6 @@ import lombok.Data;
 @Data
 public class ReferenceDTO {
 	private IBaseResource target;
+	private String targetReference;
 	private String path;
 }

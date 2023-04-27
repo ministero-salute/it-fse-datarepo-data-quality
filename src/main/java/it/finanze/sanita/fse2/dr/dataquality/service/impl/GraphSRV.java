@@ -1,8 +1,6 @@
 package it.finanze.sanita.fse2.dr.dataquality.service.impl;
 
-import it.finanze.sanita.fse2.dr.dataquality.dto.graph.EdgeDTO;
-import it.finanze.sanita.fse2.dr.dataquality.dto.graph.GraphDTO;
-import it.finanze.sanita.fse2.dr.dataquality.dto.graph.NodeDTO;
+import it.finanze.sanita.fse2.dr.dataquality.dto.graph.*;
 import it.finanze.sanita.fse2.dr.dataquality.helper.FHIRR4Helper;
 import it.finanze.sanita.fse2.dr.dataquality.service.IGraphSRV;
 import it.finanze.sanita.fse2.dr.dataquality.service.ISearchParamVerifierSRV;
@@ -22,13 +20,14 @@ public class GraphSRV implements IGraphSRV {
 	private ISearchParamVerifierSRV searchParamVerifierSRV;
 
 	public List<String> traverseGraph(String jsonBundle) {
+		System.out.println(jsonBundle);
 		return traverse(jsonBundle)
 				.stream()
-				.map(EdgeDTO::toString)
+				.map(IGraphResourceDTO::toString)
 				.collect(Collectors.toList());
 	}
 
-	private List<EdgeDTO> traverse(String jsonBundle) {
+	private List<IGraphResourceDTO> traverse(String jsonBundle) {
 		Bundle bundle = FHIRR4Helper.deserializeResource(Bundle.class, jsonBundle, true);
 		GraphDTO graph = createGraph(bundle);
 		DepthFirstSearchUtility.traverse(graph);
@@ -61,6 +60,7 @@ public class GraphSRV implements IGraphSRV {
 				.getAllReferences(node.getType(), node.getResource())
 				.stream()
 				.map(reference -> new EdgeDTO(node, reference))
+				.filter(EdgeDTO::isTraversable)
 				.peek(this::setSearchParam)
 				.collect(Collectors.toList());
 	}

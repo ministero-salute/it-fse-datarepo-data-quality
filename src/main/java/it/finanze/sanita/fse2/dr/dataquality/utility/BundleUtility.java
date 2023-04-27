@@ -1,16 +1,15 @@
 package it.finanze.sanita.fse2.dr.dataquality.utility;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.hl7.fhir.instance.model.api.IBaseResource;
-import org.hl7.fhir.r4.model.Bundle;
-import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
-
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.util.BundleUtil;
 import ca.uhn.fhir.util.ResourceReferenceInfo;
 import it.finanze.sanita.fse2.dr.dataquality.dto.graph.ReferenceDTO;
+import org.hl7.fhir.instance.model.api.IBaseResource;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class BundleUtility {
 
@@ -43,7 +42,6 @@ public class BundleUtility {
 				.newTerser()
 				.getAllResourceReferences(resource)
 				.stream()
-				.filter(ref -> ref.getResourceReference().getResource() != null)
 				.map(ref -> getReference(sourceType, ref))
 				.collect(Collectors.toList());
 	}
@@ -51,8 +49,14 @@ public class BundleUtility {
 	private static ReferenceDTO getReference(String sourceType, ResourceReferenceInfo info) {
 		ReferenceDTO reference = new ReferenceDTO();
 		reference.setTarget(info.getResourceReference().getResource());
+		reference.setTargetReference(getReference(info));
 		reference.setPath(sourceType + "." + info.getName());
 		return reference;
 	}
-	
+
+	private static String getReference(ResourceReferenceInfo info) {
+		if (info == null) return null;
+		return FhirResourceUtility.getReferenceAsString(info.getResourceReference());
+	}
+
 }
