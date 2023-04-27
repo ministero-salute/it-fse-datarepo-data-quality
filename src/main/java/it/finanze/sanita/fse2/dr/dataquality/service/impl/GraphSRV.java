@@ -20,7 +20,6 @@ public class GraphSRV implements IGraphSRV {
 	private ISearchParamVerifierSRV searchParamVerifierSRV;
 
 	public List<String> traverseGraph(String jsonBundle) {
-		System.out.println(jsonBundle);
 		return traverse(jsonBundle)
 				.stream()
 				.map(IGraphResourceDTO::toString)
