@@ -12,7 +12,6 @@ import org.hl7.fhir.r4.model.Bundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,8 +22,10 @@ public class GraphSRV implements IGraphSRV {
 	private ISearchParamVerifierSRV searchParamVerifierSRV;
 
 	public List<String> traverseGraph(String jsonBundle) {
-		List<EdgeDTO> edges = traverse(jsonBundle);
-		return new ArrayList<>();
+		return traverse(jsonBundle)
+				.stream()
+				.map(EdgeDTO::toString)
+				.collect(Collectors.toList());
 	}
 
 	private List<EdgeDTO> traverse(String jsonBundle) {

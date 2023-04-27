@@ -19,5 +19,10 @@ public class EdgeDTO {
 	public boolean isNotTraversed() {
 		return !traversed;
 	}
-	
+
+	@Override
+	public String toString() {
+		return source.getType() + "^" + target.getType() + "^" + path;
+	}
+
 }
