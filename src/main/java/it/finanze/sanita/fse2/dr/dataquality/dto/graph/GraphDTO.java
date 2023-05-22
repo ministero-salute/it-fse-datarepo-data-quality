@@ -50,7 +50,7 @@ public class GraphDTO {
 
 	public List<NodeDTO> getNodes() {
 		if (nodes == null) nodes = new ArrayList<>();
-		return nodes;
+		return nodes.stream().filter(node -> node.getId() != null).collect(Collectors.toList());
 	}
 
 	public List<EdgeDTO> getEdges() {
