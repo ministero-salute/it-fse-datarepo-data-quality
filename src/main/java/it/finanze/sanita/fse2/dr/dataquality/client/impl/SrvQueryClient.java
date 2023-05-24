@@ -6,7 +6,6 @@ package it.finanze.sanita.fse2.dr.dataquality.client.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import it.finanze.sanita.fse2.dr.dataquality.client.ISrvQueryClient;
@@ -26,27 +25,21 @@ public class SrvQueryClient implements ISrvQueryClient {
      * Rest Template 
      */
     @Autowired
-    private RestTemplate restTemplate;
+    private RestTemplate rest;
 
     /*
      * Microservices URL Config 
      */
     @Autowired
-    private MicroservicesURLCFG microservicesURLCFG;
+    private MicroservicesURLCFG services;
 
 	@Override
-	public SearchParamsResponseDTO getSearchParams() {
+	public SearchParamsResponseDTO getSearchParams() throws RuntimeException {
 		log.debug("[EDS QUERY] Calling for SearchParameters - START");
-		ResponseEntity<SearchParamsResponseDTO> response = null;
-		String url = microservicesURLCFG.getEdsQueryHost() + "/v1/searchParams";
-
-		try {
-			response = restTemplate.getForEntity(url, SearchParamsResponseDTO.class);
-			log.info(Constants.Logs.SRV_QUERY_RESPONSE, response.getStatusCode());
-		} catch(ResourceAccessException cex) {
-			log.error("Connect error while call srv-query for SearchParameters:" + cex);
-			throw cex;
-		}  
+		ResponseEntity<SearchParamsResponseDTO> response;
+		String url = services.getEdsQueryHost() + "/v1/searchParams";
+		response = rest.getForEntity(url, SearchParamsResponseDTO.class);
+		log.info(Constants.Logs.SRV_QUERY_RESPONSE, response.getStatusCode());
 		log.debug("[EDS QUERY] Calling for SearchParameters - END");
 		return response.getBody();
 	}

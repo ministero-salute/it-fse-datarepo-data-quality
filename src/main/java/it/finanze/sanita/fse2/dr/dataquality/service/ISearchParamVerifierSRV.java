@@ -4,6 +4,8 @@ public interface ISearchParamVerifierSRV {
 	
 	boolean isSearchParam(String resourceType, String path);
 
-	void refresh();
+	void refresh() throws Exception;
+
+	void tryToUpdateParamsIfNecessary();
 	
 }

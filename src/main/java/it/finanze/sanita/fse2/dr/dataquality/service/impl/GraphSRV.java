@@ -1,6 +1,9 @@
 package it.finanze.sanita.fse2.dr.dataquality.service.impl;
 
-import it.finanze.sanita.fse2.dr.dataquality.dto.graph.*;
+import it.finanze.sanita.fse2.dr.dataquality.dto.graph.EdgeDTO;
+import it.finanze.sanita.fse2.dr.dataquality.dto.graph.GraphDTO;
+import it.finanze.sanita.fse2.dr.dataquality.dto.graph.IGraphResourceDTO;
+import it.finanze.sanita.fse2.dr.dataquality.dto.graph.NodeDTO;
 import it.finanze.sanita.fse2.dr.dataquality.helper.FHIRR4Helper;
 import it.finanze.sanita.fse2.dr.dataquality.service.IGraphSRV;
 import it.finanze.sanita.fse2.dr.dataquality.service.ISearchParamVerifierSRV;
@@ -17,9 +20,12 @@ import java.util.stream.Collectors;
 public class GraphSRV implements IGraphSRV {
 
 	@Autowired
-	private ISearchParamVerifierSRV searchParamVerifierSRV;
+	private ISearchParamVerifierSRV service;
 
 	public List<String> traverseGraph(String jsonBundle) {
+		// Try to update if search params are empty, otherwise throw for as an illegal state exception
+		service.tryToUpdateParamsIfNecessary();
+		// Execute
 		return traverse(jsonBundle)
 				.stream()
 				.map(IGraphResourceDTO::toString)
@@ -65,7 +71,7 @@ public class GraphSRV implements IGraphSRV {
 	}
 
 	private void setSearchParam(EdgeDTO edge) {
-		boolean searchParam = searchParamVerifierSRV.isSearchParam(edge.getSource().getType(), edge.getPath());
+		boolean searchParam = service.isSearchParam(edge.getSource().getType(), edge.getPath());
 		edge.setSearchParam(searchParam);
 	}
 

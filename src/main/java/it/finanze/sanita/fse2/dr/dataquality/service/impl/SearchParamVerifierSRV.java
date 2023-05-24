@@ -19,14 +19,42 @@ public class SearchParamVerifierSRV implements ISearchParamVerifierSRV {
 	
 	private volatile SearchParamsResponseDTO params;
 
+	public SearchParamVerifierSRV() {
+		this.params = new SearchParamsResponseDTO();
+	}
+
 	@Override
-	public void refresh() {
+	public void refresh() throws Exception {
 		params = client.getSearchParams();
 	}
 
 	@Override
 	public boolean isSearchParam(String type, String path) {
 		return getResource(type).filter(res -> hasSearchParam(res, path)).isPresent();
+	}
+
+	public void tryToUpdateParamsIfNecessary() {
+		// Check emptiness
+		if(params.getParams().isEmpty()) {
+			// Log emptines
+			log.info("Search-params are empty, trying to reach FHIR server to retrieve theme...");
+			try {
+				paramsOrRefresh();
+			} catch (Exception e) {
+				throw new IllegalStateException(
+					"Unable to refresh search-params from FHIR, cannot invoke isSearchParam()", e
+				);
+			}
+			log.info("Search-params have been successfully retrieved");
+		}
+	}
+
+	private synchronized void paramsOrRefresh() throws Exception {
+		// Check emptiness
+		if(params.getParams().isEmpty()) {
+			// Try to refresh params
+			refresh();
+		}
 	}
 
 	private Optional<SearchParamResourceDTO> getResource(String resourceType) {

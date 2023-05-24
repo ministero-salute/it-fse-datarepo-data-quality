@@ -39,7 +39,11 @@ public class SearchParamScheduler {
         // Log me
         log.info("[GTW] Starting scheduled updating process");
         // Execute
-        service.refresh();
+        try {
+            service.refresh();
+        } catch (Exception e) {
+            log.warn("Unable to retrieve search-params from FHIR", e);
+        }
         // Log me
         log.info("[GTW] Updating process completed");
         // Reset run flag

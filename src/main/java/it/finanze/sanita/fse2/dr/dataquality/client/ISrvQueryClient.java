@@ -13,6 +13,6 @@ public interface ISrvQueryClient {
     /**
      * EDS SRV Query - get SearchParams managed by the ServerFHIR 
      */
-    SearchParamsResponseDTO getSearchParams();
+    SearchParamsResponseDTO getSearchParams() throws Exception;
     
 }
