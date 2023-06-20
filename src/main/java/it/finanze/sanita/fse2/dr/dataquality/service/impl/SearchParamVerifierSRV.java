@@ -28,7 +28,7 @@ public class SearchParamVerifierSRV implements ISearchParamVerifierSRV {
 	@Autowired
 	private ISrvQueryClient client;
 	
-	private volatile SearchParamsResponseDTO params;
+	private SearchParamsResponseDTO params;
 
 	public SearchParamVerifierSRV() {
 		this.params = new SearchParamsResponseDTO();

@@ -13,6 +13,9 @@ package it.finanze.sanita.fse2.dr.dataquality.dto.graph;
 
 import it.finanze.sanita.fse2.dr.dataquality.utility.FhirResourceUtility;
 import lombok.Data;
+
+import java.util.Objects;
+
 import org.hl7.fhir.instance.model.api.IBaseResource;
 
 @Data
@@ -37,6 +40,11 @@ public class NodeDTO implements IGraphResourceDTO {
 	@Override
 	public String toString() {
 		return getId();
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
 	}
 
 	@Override
