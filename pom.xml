@@ -96,11 +96,6 @@
 			<artifactId>hapi-fhir-structures-r5</artifactId>
 			<version>${hapi.fhir.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>ca.uhn.hapi.fhir</groupId>
-			<artifactId>org.hl7.fhir.convertors</artifactId>
-			<version>${hapi.fhir.version}</version>
-		</dependency>
 
 		<dependency>
 			<groupId>ca.uhn.hapi.fhir</groupId>
@@ -139,7 +134,7 @@
 		<dependency>
 			<groupId>ca.uhn.hapi.fhir</groupId>
 			<artifactId>org.hl7.fhir.convertors</artifactId>
-			<version>5.6.92</version>
+			<version>5.6.43</version>
 		</dependency>
 
 		<dependency>
