@@ -12,23 +12,29 @@
 package it.finanze.sanita.fse2.dr.dataquality;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
-import it.finanze.sanita.fse2.dr.dataquality.helper.FHIRR4Helper;
-import it.finanze.sanita.fse2.dr.dataquality.utility.FileUtility;
-import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.r4.model.Bundle;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.narrative.DefaultThymeleafNarrativeGenerator;
 import it.finanze.sanita.fse2.dr.dataquality.config.Constants;
 import it.finanze.sanita.fse2.dr.dataquality.dto.ValidationResultDTO;
+import it.finanze.sanita.fse2.dr.dataquality.dto.graph.IGraphResourceDTO;
+import it.finanze.sanita.fse2.dr.dataquality.helper.FHIRR4Helper;
 import it.finanze.sanita.fse2.dr.dataquality.service.IValidationSRV;
+import it.finanze.sanita.fse2.dr.dataquality.service.impl.GraphSRV;
+import it.finanze.sanita.fse2.dr.dataquality.utility.FileUtility;
+import lombok.extern.slf4j.Slf4j;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles(Constants.Profile.TEST)
@@ -38,13 +44,19 @@ class ValidationTest {
 	@Autowired
 	private IValidationSRV validationSRV;
 
+	@MockBean
+	private GraphSRV graphSRV;
+
 	@Test
-	void validationTest() {
+	void validationTest() throws Exception {
 		FhirContext context = FhirContext.forR4();
 		context.setNarrativeGenerator(new DefaultThymeleafNarrativeGenerator());
 		String bundle = new String(FileUtility.getFileFromInternalResources("Referto_di_Laboratorio_caso_semplice.json"), StandardCharsets.UTF_8);
 		final Bundle bundleDes = FHIRR4Helper.deserializeResource(Bundle.class, bundle, true);
 		log.info(FHIRR4Helper.serializeResource(bundleDes, true, false, false));
+		// Mock traverse flow
+		when(graphSRV.traverseGraph(bundle)).thenReturn(new ArrayList<String>());
+		// Perform validateBundle
 		ValidationResultDTO validationResult = validationSRV.validateBundle(bundle);
 		assertTrue(validationResult.isValid());
 	}
