@@ -10,7 +10,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class GraphDTOTest extends AbstractGraphTest {
+class GraphDTOTest extends AbstractGraphTest {
 
     @Test
     void getNode() {
@@ -33,7 +33,7 @@ public class GraphDTOTest extends AbstractGraphTest {
         // Verify the same is returned
         List<EdgeDTO> target = graph.getEdgesWithSource(source);
         // Assert reference
-        assertEquals(target.size(), EDGE_SIZE_EACH_NODE, "Edges size mismatch from the expected one");
+        assertEquals(EDGE_SIZE_EACH_NODE, target.size(), "Edges size mismatch from the expected one");
     }
 
     @Test
