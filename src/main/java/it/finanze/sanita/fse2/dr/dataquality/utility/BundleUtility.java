@@ -15,6 +15,7 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.util.BundleUtil;
 import ca.uhn.fhir.util.ResourceReferenceInfo;
 import it.finanze.sanita.fse2.dr.dataquality.dto.graph.ReferenceDTO;
+import lombok.NoArgsConstructor;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
@@ -22,6 +23,9 @@ import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static lombok.AccessLevel.PRIVATE;
+
+@NoArgsConstructor(access = PRIVATE)
 public class BundleUtility {
 
 	public static final FhirContext fhirContext = FhirContext.forR4();

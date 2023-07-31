@@ -13,7 +13,6 @@ package it.finanze.sanita.fse2.dr.dataquality.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
-import it.finanze.sanita.fse2.dr.dataquality.dto.tools.RunSchedulerDTO;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

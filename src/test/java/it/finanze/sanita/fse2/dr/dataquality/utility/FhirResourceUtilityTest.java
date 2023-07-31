@@ -33,7 +33,7 @@ class FhirResourceUtilityTest {
     private IIdType idType;
 
     @Test
-    public void getResourceAsStringFromReferenceTest() {
+    void getResourceAsStringFromReferenceTest() {
         // Mock
         when(baseReference.getResource()).thenReturn(baseResource);
         when(baseResource.getIdElement()).thenReturn(new IdType("Test", "456"));
@@ -44,7 +44,7 @@ class FhirResourceUtilityTest {
     }
 
     @Test
-    public void getReferenceAsStringtTest() {
+    void getReferenceAsStringtTest() {
         // Mock
         when(baseReference.getReferenceElement()).thenReturn(idType);
         when(idType.getResourceType()).thenReturn("Test");
@@ -56,7 +56,7 @@ class FhirResourceUtilityTest {
     }
 
     @Test
-    public void getResourceAsStringFromResourceTest() {
+    void getResourceAsStringFromResourceTest() {
         // Mock
         when(baseResource.getIdElement()).thenReturn(new IdType("Test", "101"));
         // Perform method
@@ -66,7 +66,7 @@ class FhirResourceUtilityTest {
     }
 
     @Test
-    public void getIdTypeAsStringTest() {
+    void getIdTypeAsStringTest() {
         // Mock
         when(idType.getResourceType()).thenReturn("Test");
         when(idType.getIdPart()).thenReturn("222");
@@ -77,7 +77,7 @@ class FhirResourceUtilityTest {
     }
 
     @Test
-    public void getIdTypeAsStringNullIdTypeTest() {
+    void getIdTypeAsStringNullIdTypeTest() {
         // Perform method
         String result = FhirResourceUtility.getIdTypeAsString(null);
         // Assertion

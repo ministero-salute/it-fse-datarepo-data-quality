@@ -70,11 +70,11 @@ public class GraphDTO {
 	}
 
 	public List<IGraphResourceDTO> getNotTraversedResources() {
-		List<EdgeDTO> edges = getNotTraversedEdges();
-		List<NodeDTO> nodes = getNotTraversedNodes();
-		nodes.removeIf(node -> hasNode(edges, node));
-		List<IGraphResourceDTO> resources = new ArrayList<>(edges);
-		resources.addAll(nodes);
+		List<EdgeDTO> edgs = getNotTraversedEdges();
+		List<NodeDTO> nds = getNotTraversedNodes();
+		nds.removeIf(node -> hasNode(edgs, node));
+		List<IGraphResourceDTO> resources = new ArrayList<>(edgs);
+		resources.addAll(nds);
 		return resources;
 	}
 
