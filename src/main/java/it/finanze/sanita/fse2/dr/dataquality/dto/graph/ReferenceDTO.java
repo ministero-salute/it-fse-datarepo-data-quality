@@ -11,11 +11,15 @@
  */
 package it.finanze.sanita.fse2.dr.dataquality.dto.graph;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ReferenceDTO {
 	private IBaseResource target;
 	private String targetReference;
