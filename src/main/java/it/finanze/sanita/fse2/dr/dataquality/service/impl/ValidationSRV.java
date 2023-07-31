@@ -92,21 +92,5 @@ public class ValidationSRV implements IValidationSRV {
 		return validator;
 	}
 
-//	private List<String> validateHttpMethods(Bundle bundle) {
-//		return bundle
-//				.getEntry()
-//				.stream()
-//				.filter(entry -> hasPutMethod(entry))
-//				.filter(entry -> StringUtils.isBlank(entry.getRequest().getUrl()))
-//				.map(entry -> entry.getFullUrl())
-//				.collect(Collectors.toList());
-//	}
-//
-//	private boolean hasPutMethod(BundleEntryComponent entry) {
-//		if (entry.getRequest() == null) return false;
-//		if (entry.getRequest().getMethod() == null) return false;
-//		return entry.getRequest().getMethod() == HTTPVerb.PUT;
-//	}
-
 	
  }

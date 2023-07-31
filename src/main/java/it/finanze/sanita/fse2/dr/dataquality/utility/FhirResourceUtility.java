@@ -11,11 +11,15 @@
  */
 package it.finanze.sanita.fse2.dr.dataquality.utility;
 
+import lombok.NoArgsConstructor;
 import org.hl7.fhir.instance.model.api.IBaseReference;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
 
+import static lombok.AccessLevel.PRIVATE;
+
+@NoArgsConstructor(access = PRIVATE)
 public class FhirResourceUtility {
 
 	public static String getResourceAsString(BundleEntryComponent entry) {
@@ -49,26 +53,5 @@ public class FhirResourceUtility {
 		String result = sb.toString();
 		return result.isEmpty() ? null : result;
 	}
-	
-//
-//	public static List<String> getAllResourcesList(String jsonBundle) {
-//		return getAllResources(jsonBundle)
-//				.values()
-//				.stream()
-//				.collect(Collectors.toList());
-//	}
-//	
-//	public static Map<String, String> getAllResources(String jsonBundle) {
-//		Map<String, String> allValues = FlattenJsonUtility.flattenJson(jsonBundle);
-//		return allValues
-//				.entrySet()
-//				.stream()
-//				.filter(entry -> isResource(entry))
-//                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-//	}
-//
-//	private static boolean isResource(Entry<String, String> entry) {
-//		return entry.getKey().contains("reference");
-//	}
 	
 }

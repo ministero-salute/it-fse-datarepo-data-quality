@@ -14,10 +14,15 @@ package it.finanze.sanita.fse2.dr.dataquality.utility;
 import it.finanze.sanita.fse2.dr.dataquality.dto.graph.EdgeDTO;
 import it.finanze.sanita.fse2.dr.dataquality.dto.graph.GraphDTO;
 import it.finanze.sanita.fse2.dr.dataquality.dto.graph.NodeDTO;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static lombok.AccessLevel.*;
+
+@NoArgsConstructor(access = PRIVATE)
 public class DepthFirstSearchUtility {
 
 	public static void traverse(GraphDTO graph) {

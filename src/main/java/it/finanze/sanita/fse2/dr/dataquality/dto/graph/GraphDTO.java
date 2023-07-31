@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class GraphDTO {
 
-	private static final String START_NODE = "DocumentReference";
+	public static final String START_NODE = "DocumentReference";
 
 	private List<NodeDTO> nodes;
 	private List<EdgeDTO> edges;
@@ -70,11 +70,11 @@ public class GraphDTO {
 	}
 
 	public List<IGraphResourceDTO> getNotTraversedResources() {
-		List<EdgeDTO> edges = getNotTraversedEdges();
-		List<NodeDTO> nodes = getNotTraversedNodes();
-		nodes.removeIf(node -> hasNode(edges, node));
-		List<IGraphResourceDTO> resources = new ArrayList<>(edges);
-		resources.addAll(nodes);
+		List<EdgeDTO> edgs = getNotTraversedEdges();
+		List<NodeDTO> nds = getNotTraversedNodes();
+		nds.removeIf(node -> hasNode(edgs, node));
+		List<IGraphResourceDTO> resources = new ArrayList<>(edgs);
+		resources.addAll(nds);
 		return resources;
 	}
 
@@ -100,14 +100,14 @@ public class GraphDTO {
 		edgeDTO.setTraversed(true);
 	}
 
-	private List<NodeDTO> getNotTraversedNodes() {
+	public List<NodeDTO> getNotTraversedNodes() {
 		return getNodes()
 				.stream()
 				.filter(node -> !node.isTraversed())
 				.collect(Collectors.toList());
 	}
 
-	private List<EdgeDTO> getNotTraversedEdges() {
+	public List<EdgeDTO> getNotTraversedEdges() {
 		return getEdges()
 				.stream()
 				.filter(edge -> !edge.isTraversed())

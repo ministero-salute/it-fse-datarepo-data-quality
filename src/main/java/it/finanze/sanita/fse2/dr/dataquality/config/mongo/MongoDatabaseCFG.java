@@ -33,11 +33,6 @@ import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
  */
 @Configuration
 public class MongoDatabaseCFG {
-
-	@Autowired
-	private MongoPropertiesCFG props;
-
-
     /**
      * Creates a new factory instance with the given connection string (properties.yml)
      * @return The new {@link SimpleMongoClientDatabaseFactory} instance
@@ -53,7 +48,7 @@ public class MongoDatabaseCFG {
      */
     @Bean
     @Primary
-    public MongoTemplate createTemplate(ApplicationContext appContext) {
+    public MongoTemplate createTemplate(ApplicationContext appContext, MongoPropertiesCFG props) {
         // Create new connection instance
         MongoDatabaseFactory factory = createFactory(props);
         // Assign application context to mongo
