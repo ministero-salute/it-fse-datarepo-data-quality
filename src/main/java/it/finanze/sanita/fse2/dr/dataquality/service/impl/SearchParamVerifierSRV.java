@@ -46,7 +46,7 @@ public class SearchParamVerifierSRV implements ISearchParamVerifierSRV {
 
 	public void tryToUpdateParamsIfNecessary() {
 		// Check emptiness
-		if(params.getParams().isEmpty()) {
+		if(getResponse().getParams().isEmpty()) {
 			// Log emptines
 			log.info("Search-params are empty, trying to reach FHIR server to retrieve theme...");
 			try {
@@ -62,14 +62,14 @@ public class SearchParamVerifierSRV implements ISearchParamVerifierSRV {
 
 	private synchronized void paramsOrRefresh() throws Exception {
 		// Check emptiness
-		if(params.getParams().isEmpty()) {
+		if(getResponse().getParams().isEmpty()) {
 			// Try to refresh params
 			refresh();
 		}
 	}
 
 	private Optional<SearchParamResourceDTO> getResource(String resourceType) {
-		return params
+		return getResponse()
 				.getParams()
 				.stream()
 				.filter(resource -> resource.getName().equals(resourceType))
@@ -80,7 +80,7 @@ public class SearchParamVerifierSRV implements ISearchParamVerifierSRV {
 		return resource.getParameters().stream().anyMatch(p -> p.equals(path));
 	}
 
-	public SearchParamsResponseDTO getParams() {
+	public SearchParamsResponseDTO getResponse() {
 		return params;
 	}
 }

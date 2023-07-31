@@ -11,12 +11,14 @@
  */
 package it.finanze.sanita.fse2.dr.dataquality.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@AllArgsConstructor
 public class SearchParamsResponseDTO {
 
 	private final List<SearchParamResourceDTO> params;

@@ -66,6 +66,6 @@ public class SearchParamScheduler {
     }
 
     public SearchParamsResponseDTO status() {
-        return service.getParams();
+        return service.getResponse();
     }
 }

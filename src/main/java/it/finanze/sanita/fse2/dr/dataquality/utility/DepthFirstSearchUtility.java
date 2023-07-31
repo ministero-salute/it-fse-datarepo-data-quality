@@ -32,7 +32,7 @@ public class DepthFirstSearchUtility {
 
 	private static void applyDFS(NodeDTO currentNode, EdgeDTO fromEdge, GraphDTO graph) {
 		graph.setEdgeTraversed(fromEdge);
-		if (currentNode.isTraversed()) return;
+		if (currentNode == null || currentNode.isTraversed()) return;
 		graph.setNodeTraversed(currentNode);
 		List<EdgeDTO> edgesToVisit = getEdgesToVisit(currentNode, graph);
 		edgesToVisit.forEach(edge -> applyDFS(edge.getTarget(), edge, graph));

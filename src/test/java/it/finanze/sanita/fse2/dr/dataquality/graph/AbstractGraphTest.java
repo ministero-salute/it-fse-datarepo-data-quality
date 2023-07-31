@@ -1,5 +1,7 @@
 package it.finanze.sanita.fse2.dr.dataquality.graph;
 
+import it.finanze.sanita.fse2.dr.dataquality.dto.SearchParamResourceDTO;
+import it.finanze.sanita.fse2.dr.dataquality.dto.SearchParamsResponseDTO;
 import it.finanze.sanita.fse2.dr.dataquality.dto.graph.EdgeDTO;
 import it.finanze.sanita.fse2.dr.dataquality.dto.graph.GraphDTO;
 import it.finanze.sanita.fse2.dr.dataquality.dto.graph.NodeDTO;
@@ -8,6 +10,8 @@ import org.hl7.fhir.r4.model.DocumentReference;
 import org.hl7.fhir.r4.model.Patient;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -55,6 +59,27 @@ public abstract class AbstractGraphTest {
 
     private String randomId() {
         return String.valueOf(ThreadLocalRandom.current().nextInt(0, 9998 + 1));
+    }
+
+    protected SearchParamsResponseDTO getSearchParamsResponse() {
+        return new SearchParamsResponseDTO(getSearchParamResource(getSearchParams()));
+    }
+
+    private List<SearchParamResourceDTO> getSearchParamResource(List<String> path) {
+        List<SearchParamResourceDTO> params = new ArrayList<>();
+        for (String s : path) {
+            SearchParamResourceDTO res = new SearchParamResourceDTO();
+            res.setName(s);
+            res.setParameters(Collections.singletonList(String.format("null.%s", s.toLowerCase())));
+            params.add(res);
+        }
+        return params;
+    }
+
+    private List<String> getSearchParams() {
+        return Arrays.asList(
+          "Encounter"
+        );
     }
 
 }
