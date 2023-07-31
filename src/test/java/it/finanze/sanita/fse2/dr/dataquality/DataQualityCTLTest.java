@@ -11,61 +11,63 @@
  */
 package it.finanze.sanita.fse2.dr.dataquality;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.google.gson.Gson;
-import it.finanze.sanita.fse2.dr.dataquality.dto.ValidationResultDTO;
-import it.finanze.sanita.fse2.dr.dataquality.dto.request.FhirOperationDTO;
-import it.finanze.sanita.fse2.dr.dataquality.utility.FileUtility;
-import it.finanze.sanita.fse2.dr.dataquality.utility.JsonUtility;
-import org.checkerframework.checker.units.qual.K;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.Status;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import it.finanze.sanita.fse2.dr.dataquality.config.Constants;
 import it.finanze.sanita.fse2.dr.dataquality.controller.impl.ValidateCTL;
-
-import java.nio.charset.StandardCharsets;
-import java.util.Map;
+import it.finanze.sanita.fse2.dr.dataquality.dto.ValidationResultDTO;
+import it.finanze.sanita.fse2.dr.dataquality.dto.request.FhirOperationDTO;
+import it.finanze.sanita.fse2.dr.dataquality.service.impl.GraphSRV;
+import it.finanze.sanita.fse2.dr.dataquality.utility.FileUtility;
+import it.finanze.sanita.fse2.dr.dataquality.utility.JsonUtility;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @ComponentScan
-@ExtendWith(SpringExtension.class)
 @ActiveProfiles(Constants.Profile.TEST)
 @DisplayName("DataQuality Controller Unit Test")
 class DataQualityCTLTest {
 
 	@Autowired
-	HttpServletRequest request;
+	private HttpServletRequest request;
 
 	@Autowired
-	ServletWebServerApplicationContext webServerAppCtxt;
+	private MockMvc mvc;
 
 	@Autowired
-	MockMvc mvc;
+	private ValidateCTL controller;
 
-	@Autowired
-	ValidateCTL controllerDataQuality;
+	@MockBean
+	private GraphSRV graphSRV;
 
 	static final String DOCUMENT_TEST_JSON_STRING_PUT = "{\"jsonString\": \"testPut\"}";
 	static final String DOCUMENT_TEST_MASTER_IDENTIFIER_C = "testMasterIdentifierRepoC";
@@ -87,17 +89,14 @@ class DataQualityCTLTest {
 		String bundle = new String(FileUtility.getFileFromInternalResources("Referto_di_Laboratorio_caso_semplice.json"), StandardCharsets.UTF_8);
 		FhirOperationDTO fhirOperationDTO = new FhirOperationDTO();
 		fhirOperationDTO.setJsonString(bundle);
-		MockHttpServletResponse response = mvc.perform(post("/v1/validate-bundle")
-						.contentType(MediaType.APPLICATION_JSON_VALUE)
-						.content(new Gson().toJson(fhirOperationDTO)))
-				.andExpect(status().isOk())
-				.andReturn().getResponse();
-
-		ValidationResultDTO contentResponse = JsonUtility.jsonToObject(new String(response.getContentAsByteArray()), ValidationResultDTO.class);
-
+		// Mock
+		when(graphSRV.traverseGraph(anyString())).thenReturn(new ArrayList<String>());
+		// Perform validateBundle
+		ValidationResultDTO contentResponse = controller.validateBundle(fhirOperationDTO, request);
+		// Assertions
 		assertAll(
 				() -> assertTrue(contentResponse.isValid()),
-				() -> assertEquals("", contentResponse.getMessage())
+				() -> assertEquals("The JSON bundle has been validated", contentResponse.getMessage())
 		);
 	}
 
@@ -105,17 +104,16 @@ class DataQualityCTLTest {
 	void qualityErrorTest() throws Exception {
 		FhirOperationDTO fhirOperationDTO = new FhirOperationDTO();
 		fhirOperationDTO.setJsonString("error bundle");
-		MockHttpServletResponse response = mvc.perform(post("/v1/validate-bundle")
-						.contentType(MediaType.APPLICATION_JSON_VALUE)
-						.content(new Gson().toJson(fhirOperationDTO)))
-				.andExpect(status().isOk())
-				.andReturn().getResponse();
-
-		ValidationResultDTO contentResponse = JsonUtility.jsonToObject(new String(response.getContentAsByteArray()), ValidationResultDTO.class);
-
+		// Mock
+		List<String> traverseList = new ArrayList<>();
+		traverseList.add("test");
+		when(graphSRV.traverseGraph(anyString())).thenReturn(traverseList);
+		// Perform validateBundle
+		ValidationResultDTO contentResponse = controller.validateBundle(fhirOperationDTO, request);
+		// Assertions
 		assertAll(
 				() -> assertFalse(contentResponse.isValid()),
-				() -> assertNotEquals("", contentResponse.getMessage())
+				() -> assertNotEquals("Unable to validate JSON bundle due to untraversable bundle resources: [test]", contentResponse.getMessage())
 		);
 	}
 }
