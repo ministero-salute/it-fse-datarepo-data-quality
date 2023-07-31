@@ -16,7 +16,6 @@ import static org.mockito.Mockito.when;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.hl7.fhir.r4.model.Bundle;
 import org.junit.jupiter.api.Test;
@@ -29,7 +28,6 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.narrative.DefaultThymeleafNarrativeGenerator;
 import it.finanze.sanita.fse2.dr.dataquality.config.Constants;
 import it.finanze.sanita.fse2.dr.dataquality.dto.ValidationResultDTO;
-import it.finanze.sanita.fse2.dr.dataquality.dto.graph.IGraphResourceDTO;
 import it.finanze.sanita.fse2.dr.dataquality.helper.FHIRR4Helper;
 import it.finanze.sanita.fse2.dr.dataquality.service.IValidationSRV;
 import it.finanze.sanita.fse2.dr.dataquality.service.impl.GraphSRV;
