@@ -23,10 +23,11 @@ import it.finanze.sanita.fse2.dr.dataquality.dto.tools.RunSchedulerDTO;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+
+import static it.finanze.sanita.fse2.dr.dataquality.utility.RouteUtility.API_REFRESH_SCHEDULER;
+import static it.finanze.sanita.fse2.dr.dataquality.utility.RouteUtility.API_STATUS_PARAMS;
 
 @Tag(name = "Scheduler")
-@RequestMapping("/v1")
 public interface ISchedulerCTL {
 
     @Operation(summary = "Aggiorna referenze search-params", description = "Aggiorna le referenze dei search-params esposte dal FHIR")
@@ -35,11 +36,11 @@ public interface ISchedulerCTL {
         @ApiResponse(responseCode = "423", description = "Richiesta update rigettata", content = @Content(mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = ErrorResponseDTO.class))),
         @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = ErrorResponseDTO.class))),
     })
-    @PostMapping("/refresh")
+    @PostMapping(API_REFRESH_SCHEDULER)
     RunSchedulerDTO refresh();
 
     @Operation(summary = "Recupera le search-params correnti", description = "Recupera le referenze attualmente in uso sul server")
     @ApiResponse(responseCode = "200", description = "Search params correnti", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = SearchParamsResponseDTO.class)))
-    @GetMapping("/status")
+    @GetMapping(API_STATUS_PARAMS)
     SearchParamsResponseDTO status();
 }
