@@ -12,6 +12,7 @@
 package it.finanze.sanita.fse2.dr.dataquality;
 
 import it.finanze.sanita.fse2.dr.dataquality.client.impl.SrvQueryClient;
+import it.finanze.sanita.fse2.dr.dataquality.dto.SearchParamsResponseDTO;
 import it.finanze.sanita.fse2.dr.dataquality.dto.ValidationResultDTO;
 import it.finanze.sanita.fse2.dr.dataquality.graph.AbstractGraphTest;
 import it.finanze.sanita.fse2.dr.dataquality.service.IValidationSRV;
@@ -28,8 +29,7 @@ import java.util.ArrayList;
 import static it.finanze.sanita.fse2.dr.dataquality.config.Constants.Profile.TEST;
 import static it.finanze.sanita.fse2.dr.dataquality.utility.FileUtility.getFileFromInternalResources;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -77,16 +77,15 @@ class ValidationTest extends AbstractGraphTest {
 	}
 
 	@Test
-	void isValidRefresh() {
+	void isRefreshOk() {
 		// Retrieve file
 		String bundle = new String(getFileFromInternalResources("Referto_di_Laboratorio_caso_semplice.json"), UTF_8);
 		// Mock params
-		doReturn(getSearchParamsResponse()).when(client).getSearchParams();
-		// Mock traverse flow
-		doReturn(new ArrayList<>()).when(graphSRV).traverseGraph(anyString());
-		// Perform validation
-		ValidationResultDTO validationResult = validations.validateBundle(bundle);
+		SearchParamsResponseDTO response = getSearchParamsResponse();
+		doReturn(response).when(client).getSearchParams();
+		// Perform validation to trigger refresh
+		validations.validateBundle(bundle);
 		// Verify
-		assertTrue(validationResult.isValid());
+		assertEquals(response, params.getResponse(), "Object mismatch");
 	}
 }
