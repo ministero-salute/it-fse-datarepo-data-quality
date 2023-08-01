@@ -47,7 +47,6 @@ public class SearchParamVerifierSRV implements ISearchParamVerifierSRV {
 	public void tryToUpdateParamsIfNecessary() {
 		// Check emptiness
 		if(getResponse().getParams().isEmpty()) {
-			// Log emptines
 			log.info("Search-params are empty, trying to reach FHIR server to retrieve theme...");
 			try {
 				paramsOrRefresh();

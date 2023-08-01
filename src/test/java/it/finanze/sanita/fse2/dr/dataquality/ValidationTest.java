@@ -11,6 +11,7 @@
  */
 package it.finanze.sanita.fse2.dr.dataquality;
 
+import it.finanze.sanita.fse2.dr.dataquality.client.impl.SrvQueryClient;
 import it.finanze.sanita.fse2.dr.dataquality.dto.ValidationResultDTO;
 import it.finanze.sanita.fse2.dr.dataquality.graph.AbstractGraphTest;
 import it.finanze.sanita.fse2.dr.dataquality.service.IValidationSRV;
@@ -30,8 +31,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -43,6 +43,9 @@ class ValidationTest extends AbstractGraphTest {
 
 	@SpyBean
 	private SearchParamVerifierSRV params;
+
+	@SpyBean
+	private SrvQueryClient client;
 
 	@SpyBean
 	private GraphSRV graphSRV;
@@ -65,6 +68,20 @@ class ValidationTest extends AbstractGraphTest {
 		String bundle = new String(getFileFromInternalResources("Referto_di_Laboratorio_caso_semplice.json"), UTF_8);
 		// Mock update
 		doNothing().when(params).tryToUpdateParamsIfNecessary();
+		// Mock traverse flow
+		doReturn(new ArrayList<>()).when(graphSRV).traverseGraph(anyString());
+		// Perform validation
+		ValidationResultDTO validationResult = validations.validateBundle(bundle);
+		// Verify
+		assertTrue(validationResult.isValid());
+	}
+
+	@Test
+	void isValidRefresh() {
+		// Retrieve file
+		String bundle = new String(getFileFromInternalResources("Referto_di_Laboratorio_caso_semplice.json"), UTF_8);
+		// Mock params
+		doReturn(getSearchParamsResponse()).when(client).getSearchParams();
 		// Mock traverse flow
 		doReturn(new ArrayList<>()).when(graphSRV).traverseGraph(anyString());
 		// Perform validation
