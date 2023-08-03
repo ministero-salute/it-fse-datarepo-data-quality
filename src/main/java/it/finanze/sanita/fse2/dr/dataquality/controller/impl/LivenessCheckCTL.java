@@ -23,6 +23,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import static it.finanze.sanita.fse2.dr.dataquality.utility.RouteUtility.API_STATUS_HEALTH;
+
 @RestController
 @Tag(name = "Health check Status Actuator")
 public class LivenessCheckCTL implements HealthIndicator {
@@ -33,7 +35,7 @@ public class LivenessCheckCTL implements HealthIndicator {
      * @return system state
      */
     @Override
-    @GetMapping("/status")
+    @GetMapping(API_STATUS_HEALTH)
     @Operation(
         summary = "Health check status",
         description = "Health check endpoint."

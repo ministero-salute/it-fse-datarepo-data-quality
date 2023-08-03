@@ -1,4 +1,4 @@
-package it.finanze.sanita.fse2.dr.dataquality.graph;
+package it.finanze.sanita.fse2.dr.dataquality.service.graph;
 
 import it.finanze.sanita.fse2.dr.dataquality.dto.graph.EdgeDTO;
 import it.finanze.sanita.fse2.dr.dataquality.dto.graph.GraphDTO;
@@ -10,7 +10,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class GraphDTOTest extends AbstractGraphTest {
+class GraphSRVTest extends AbstractGraphTest {
 
     @Test
     void getNode() {

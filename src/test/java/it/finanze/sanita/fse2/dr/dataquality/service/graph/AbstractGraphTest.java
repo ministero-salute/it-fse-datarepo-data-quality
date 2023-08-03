@@ -1,4 +1,4 @@
-package it.finanze.sanita.fse2.dr.dataquality.graph;
+package it.finanze.sanita.fse2.dr.dataquality.service.graph;
 
 import it.finanze.sanita.fse2.dr.dataquality.dto.SearchParamResourceDTO;
 import it.finanze.sanita.fse2.dr.dataquality.dto.SearchParamsResponseDTO;
@@ -77,8 +77,8 @@ public abstract class AbstractGraphTest {
     }
 
     private List<String> getSearchParams() {
-        return Arrays.asList(
-          "Encounter"
+        return Collections.singletonList(
+            "Encounter"
         );
     }
 

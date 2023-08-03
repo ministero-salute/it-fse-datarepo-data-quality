@@ -11,9 +11,11 @@ public class RouteUtility {
 
     public static final String API_REFRESH = "refresh";
     public static final String API_STATUS = "status";
+    public static final String API_VALIDATE = "validate-bundle";
 
     public static final String API_REFRESH_SCHEDULER = "/" + API_VERSION + "/" + API_REFRESH;
     public static final String API_STATUS_PARAMS = "/" + API_VERSION + "/" + API_STATUS;
-
+    public static final String API_STATUS_HEALTH = "/" + API_STATUS;
+    public static final String API_VALIDATE_BUNDLE = "/" + API_VERSION + "/" + API_VALIDATE;
 
 }

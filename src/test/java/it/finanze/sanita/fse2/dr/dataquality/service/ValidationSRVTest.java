@@ -9,13 +9,12 @@
  * 
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package it.finanze.sanita.fse2.dr.dataquality;
+package it.finanze.sanita.fse2.dr.dataquality.service;
 
 import it.finanze.sanita.fse2.dr.dataquality.client.impl.SrvQueryClient;
 import it.finanze.sanita.fse2.dr.dataquality.dto.SearchParamsResponseDTO;
 import it.finanze.sanita.fse2.dr.dataquality.dto.ValidationResultDTO;
-import it.finanze.sanita.fse2.dr.dataquality.graph.AbstractGraphTest;
-import it.finanze.sanita.fse2.dr.dataquality.service.IValidationSRV;
+import it.finanze.sanita.fse2.dr.dataquality.service.graph.AbstractGraphTest;
 import it.finanze.sanita.fse2.dr.dataquality.service.impl.GraphSRV;
 import it.finanze.sanita.fse2.dr.dataquality.service.impl.SearchParamVerifierSRV;
 import org.junit.jupiter.api.Test;
@@ -36,7 +35,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ActiveProfiles(TEST)
-class ValidationTest extends AbstractGraphTest {
+class ValidationSRVTest extends AbstractGraphTest {
 
 	@Autowired
 	private IValidationSRV validations;
@@ -48,7 +47,7 @@ class ValidationTest extends AbstractGraphTest {
 	private SrvQueryClient client;
 
 	@SpyBean
-	private GraphSRV graphSRV;
+	private GraphSRV service;
 
 	@Test
 	void isNotValid() {
@@ -69,7 +68,7 @@ class ValidationTest extends AbstractGraphTest {
 		// Mock update
 		doNothing().when(params).tryToUpdateParamsIfNecessary();
 		// Mock traverse flow
-		doReturn(new ArrayList<>()).when(graphSRV).traverseGraph(anyString());
+		doReturn(new ArrayList<>()).when(service).traverseGraph(anyString());
 		// Perform validation
 		ValidationResultDTO validationResult = validations.validateBundle(bundle);
 		// Verify
