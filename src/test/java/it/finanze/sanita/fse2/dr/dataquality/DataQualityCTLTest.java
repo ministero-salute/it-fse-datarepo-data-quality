@@ -26,8 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,11 +33,11 @@ import org.springframework.boot.actuate.health.Status;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import it.finanze.sanita.fse2.dr.dataquality.config.Constants;
@@ -49,6 +47,7 @@ import it.finanze.sanita.fse2.dr.dataquality.dto.request.FhirOperationDTO;
 import it.finanze.sanita.fse2.dr.dataquality.service.impl.GraphSRV;
 import it.finanze.sanita.fse2.dr.dataquality.utility.FileUtility;
 import it.finanze.sanita.fse2.dr.dataquality.utility.JsonUtility;
+import jakarta.servlet.http.HttpServletRequest;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
@@ -57,63 +56,63 @@ import it.finanze.sanita.fse2.dr.dataquality.utility.JsonUtility;
 @DisplayName("DataQuality Controller Unit Test")
 class DataQualityCTLTest {
 
-	@Autowired
-	private HttpServletRequest request;
+    @Autowired
+    private HttpServletRequest request;
 
-	@Autowired
-	private MockMvc mvc;
+    @Autowired
+    private MockMvc mvc;
 
-	@Autowired
-	private ValidateCTL controller;
+    @Autowired
+    private ValidateCTL controller;
 
-	@MockBean
-	private GraphSRV graphSRV;
+    @MockitoBean
+    private GraphSRV graphSRV;
 
-	static final String DOCUMENT_TEST_JSON_STRING_PUT = "{\"jsonString\": \"testPut\"}";
-	static final String DOCUMENT_TEST_MASTER_IDENTIFIER_C = "testMasterIdentifierRepoC";
+    static final String DOCUMENT_TEST_JSON_STRING_PUT = "{\"jsonString\": \"testPut\"}";
+    static final String DOCUMENT_TEST_MASTER_IDENTIFIER_C = "testMasterIdentifierRepoC";
 
-	@Test
-	void livenessCheckCtlTest() throws Exception {
-		MockHttpServletResponse response = mvc.perform(get("/status")
-				.contentType(MediaType.APPLICATION_JSON_VALUE))
-				.andExpectAll(status().isOk()).andReturn().getResponse();
+    @Test
+    void livenessCheckCtlTest() throws Exception {
+        MockHttpServletResponse response = mvc.perform(get("/status")
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpectAll(status().isOk()).andReturn().getResponse();
 
+        Map contentResponse = JsonUtility.jsonToObject(new String(response.getContentAsByteArray()), Map.class);
+        assertTrue(contentResponse.containsKey("status"));
+        assertEquals(Status.UP.getCode(), contentResponse.get("status"));
+    }
 
-		Map contentResponse = JsonUtility.jsonToObject(new String(response.getContentAsByteArray()), Map.class);
-		assertTrue(contentResponse.containsKey("status"));
-		assertEquals(Status.UP.getCode(), contentResponse.get("status"));
-	}
+    @Test
+    void qualityTest() throws Exception {
+        String bundle = new String(
+                FileUtility.getFileFromInternalResources("Referto_di_Laboratorio_caso_semplice.json"),
+                StandardCharsets.UTF_8);
+        FhirOperationDTO fhirOperationDTO = new FhirOperationDTO();
+        fhirOperationDTO.setJsonString(bundle);
+        // Mock
+        when(graphSRV.traverseGraph(anyString())).thenReturn(new ArrayList<String>());
+        // Perform validateBundle
+        ValidationResultDTO contentResponse = controller.validateBundle(fhirOperationDTO, request);
+        // Assertions
+        assertAll(
+                () -> assertTrue(contentResponse.isValid()),
+                () -> assertEquals("The JSON bundle has been validated", contentResponse.getMessage()));
+    }
 
-	@Test
-	void qualityTest() throws Exception {
-		String bundle = new String(FileUtility.getFileFromInternalResources("Referto_di_Laboratorio_caso_semplice.json"), StandardCharsets.UTF_8);
-		FhirOperationDTO fhirOperationDTO = new FhirOperationDTO();
-		fhirOperationDTO.setJsonString(bundle);
-		// Mock
-		when(graphSRV.traverseGraph(anyString())).thenReturn(new ArrayList<String>());
-		// Perform validateBundle
-		ValidationResultDTO contentResponse = controller.validateBundle(fhirOperationDTO, request);
-		// Assertions
-		assertAll(
-				() -> assertTrue(contentResponse.isValid()),
-				() -> assertEquals("The JSON bundle has been validated", contentResponse.getMessage())
-		);
-	}
-
-	@Test
-	void qualityErrorTest() throws Exception {
-		FhirOperationDTO fhirOperationDTO = new FhirOperationDTO();
-		fhirOperationDTO.setJsonString("error bundle");
-		// Mock
-		List<String> traverseList = new ArrayList<>();
-		traverseList.add("test");
-		when(graphSRV.traverseGraph(anyString())).thenReturn(traverseList);
-		// Perform validateBundle
-		ValidationResultDTO contentResponse = controller.validateBundle(fhirOperationDTO, request);
-		// Assertions
-		assertAll(
-				() -> assertFalse(contentResponse.isValid()),
-				() -> assertNotEquals("Unable to validate JSON bundle due to untraversable bundle resources: [test]", contentResponse.getMessage())
-		);
-	}
+    @Test
+    void qualityErrorTest() throws Exception {
+        FhirOperationDTO fhirOperationDTO = new FhirOperationDTO();
+        fhirOperationDTO.setJsonString("error bundle");
+        // Mock
+        List<String> traverseList = new ArrayList<>();
+        traverseList.add("test");
+        when(graphSRV.traverseGraph(anyString())).thenReturn(traverseList);
+        // Perform validateBundle
+        ValidationResultDTO contentResponse = controller.validateBundle(fhirOperationDTO, request);
+        // Assertions
+        assertAll(
+                () -> assertFalse(contentResponse.isValid()),
+                () -> assertNotEquals("Unable to validate JSON bundle due to untraversable bundle resources: [test]",
+                        contentResponse.getMessage()));
+    }
 }

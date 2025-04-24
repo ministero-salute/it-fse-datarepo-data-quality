@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-import org.springdoc.core.customizers.OpenApiCustomiser;
+import org.springdoc.core.customizers.OpenApiCustomizer; // <- updated
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -34,100 +34,99 @@ import io.swagger.v3.oas.models.servers.Server;
 @Configuration
 public class OpenApiCFG {
 
+    public OpenApiCFG() {
+        // Empty constructor.
+    }
 
-	public OpenApiCFG() {
-		// Empty constructor.
-	}
+    @Bean
+    public OpenApiCustomizer openApiCustomiser(final CustomSwaggerCFG customOpenapi) {
 
-	@Bean
-	public OpenApiCustomiser openApiCustomiser(final CustomSwaggerCFG customOpenapi) {
+        final List<String> required = new ArrayList<>();
+        required.add("file");
+        required.add("requestBody");
 
-		final List<String> required = new ArrayList<>();
-		required.add("file");
-		required.add("requestBody");
+        return openApi -> {
 
-		return openApi -> {
+            // Populating info section.
+            openApi.getInfo().setTitle(customOpenapi.getTitle());
+            openApi.getInfo().setVersion(customOpenapi.getVersion());
+            openApi.getInfo().setDescription(customOpenapi.getDescription());
+            openApi.getInfo().setTermsOfService(customOpenapi.getTermsOfService());
 
-			// Populating info section.
-			openApi.getInfo().setTitle(customOpenapi.getTitle());
-			openApi.getInfo().setVersion(customOpenapi.getVersion());
-			openApi.getInfo().setDescription(customOpenapi.getDescription());
-			openApi.getInfo().setTermsOfService(customOpenapi.getTermsOfService());
+            // Adding contact to info section
+            final Contact contact = new Contact();
+            contact.setName(customOpenapi.getContactName());
+            contact.setUrl(customOpenapi.getContactUrl());
+            contact.setEmail(customOpenapi.getContactMail());
+            openApi.getInfo().setContact(contact);
 
-			// Adding contact to info section
-			final Contact contact = new Contact();
-			contact.setName(customOpenapi.getContactName());
-			contact.setUrl(customOpenapi.getContactUrl());
-			contact.setEmail(customOpenapi.getContactMail());
-			openApi.getInfo().setContact(contact);
+            // Adding extensions
+            openApi.getInfo().addExtension("x-api-id", customOpenapi.getApiId());
+            openApi.getInfo().addExtension("x-summary", customOpenapi.getApiSummary());
 
-			// Adding extensions
-			openApi.getInfo().addExtension("x-api-id", customOpenapi.getApiId());
-			openApi.getInfo().addExtension("x-summary", customOpenapi.getApiSummary());
+            for (final Server server : openApi.getServers()) {
+                final Pattern pattern = Pattern.compile("^https://.*");
+                if (!pattern.matcher(server.getUrl()).matches()) {
+                    server.addExtension("x-sandbox", true);
+                }
+            }
 
-			for (final Server server : openApi.getServers()) {
-				final Pattern pattern = Pattern.compile("^https://.*");
-				if (!pattern.matcher(server.getUrl()).matches()) {
-					server.addExtension("x-sandbox", true);
-				}
-			}
+            openApi.getComponents().getSchemas().values().forEach(schema -> schema.setAdditionalProperties(false));
 
-			openApi.getComponents().getSchemas().values().forEach(schema -> schema.setAdditionalProperties(false));
+            openApi.getPaths().values().stream().map(item -> getFileSchema(item)).filter(Objects::nonNull)
+                    .forEach(schema -> {
+                        schema.additionalProperties(false);
+                        schema.getProperties().get("file").setMaxLength(customOpenapi.getFileMaxLength());
+                        schema.required(required);
+                    });
+        };
+    }
 
-			openApi.getPaths().values().stream().map(item -> getFileSchema(item)).filter(Objects::nonNull)
-			.forEach(schema -> {
-				schema.additionalProperties(false);
-				schema.getProperties().get("file").setMaxLength(customOpenapi.getFileMaxLength());
-				schema.required(required);
-			});
-		};
-	}
+    @Bean
+    public OpenApiCustomizer customerGlobalHeaderOpenApiCustomiser() {
+        return openApi -> {
+            openApi.getPaths().values().forEach(pathItem -> pathItem.readOperations().forEach(operation -> {
+                final ApiResponses apiResponses = operation.getResponses();
 
-	@Bean
-	public OpenApiCustomiser customerGlobalHeaderOpenApiCustomiser() {
-		return openApi -> {
-			openApi.getPaths().values().forEach(pathItem -> pathItem.readOperations().forEach(operation -> {
-				final ApiResponses apiResponses = operation.getResponses();
+                final Schema<Object> errorResponseSchema = new Schema<>();
+                errorResponseSchema.setName("Error");
+                errorResponseSchema.set$ref("#/components/schemas/ErrorResponseDTO");
+                final MediaType media = new MediaType();
+                media.schema(errorResponseSchema);
+                final ApiResponse apiResponse = new ApiResponse().description("default").content(new Content()
+                        .addMediaType(org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON_VALUE, media));
+                apiResponses.addApiResponse("default", apiResponse);
+            }));
+        };
+    }
 
-				final Schema<Object> errorResponseSchema = new Schema<>();
-				errorResponseSchema.setName("Error");
-				errorResponseSchema.set$ref("#/components/schemas/ErrorResponseDTO");
-				final MediaType media = new MediaType();
-				media.schema(errorResponseSchema);
-				final ApiResponse apiResponse = new ApiResponse().description("default").content(new Content()
-						.addMediaType(org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON_VALUE, media));
-				apiResponses.addApiResponse("default", apiResponse);
-			}));
-		};
-	}
+    private Schema<?> getFileSchema(PathItem item) {
+        MediaType mediaType = getMultipartFile(item);
+        if (mediaType == null)
+            return null;
+        return mediaType.getSchema();
+    }
 
-	private Schema<?> getFileSchema(PathItem item) {
-		MediaType mediaType = getMultipartFile(item);
-		if (mediaType == null)
-			return null;
-		return mediaType.getSchema();
-	}
+    private Operation getOperation(PathItem item) {
+        if (item.getPost() != null)
+            return item.getPost();
+        if (item.getPatch() != null)
+            return item.getPatch();
+        if (item.getPut() != null)
+            return item.getPut();
+        return null;
+    }
 
-	private Operation getOperation(PathItem item) {
-		if (item.getPost() != null)
-			return item.getPost();
-		if (item.getPatch() != null)
-			return item.getPatch();
-		if (item.getPut() != null)
-			return item.getPut();
-		return null;
-	}
-
-	private MediaType getMultipartFile(PathItem item) {
-		Operation operation = getOperation(item);
-		if (operation == null)
-			return null;
-		RequestBody body = operation.getRequestBody();
-		if (body == null)
-			return null;
-		Content content = body.getContent();
-		if (content == null)
-			return null;
-		return content.get(org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE);
-	}
+    private MediaType getMultipartFile(PathItem item) {
+        Operation operation = getOperation(item);
+        if (operation == null)
+            return null;
+        RequestBody body = operation.getRequestBody();
+        if (body == null)
+            return null;
+        Content content = body.getContent();
+        if (content == null)
+            return null;
+        return content.get(org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE);
+    }
 }

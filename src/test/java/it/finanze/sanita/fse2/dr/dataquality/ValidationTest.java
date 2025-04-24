@@ -11,6 +11,25 @@
  */
 package it.finanze.sanita.fse2.dr.dataquality;
 
+import static it.finanze.sanita.fse2.dr.dataquality.config.Constants.Profile.TEST;
+import static it.finanze.sanita.fse2.dr.dataquality.utility.FileUtility.getFileFromInternalResources;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+
+import java.util.ArrayList;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
+
 import it.finanze.sanita.fse2.dr.dataquality.client.impl.SrvQueryClient;
 import it.finanze.sanita.fse2.dr.dataquality.dto.SearchParamsResponseDTO;
 import it.finanze.sanita.fse2.dr.dataquality.dto.ValidationResultDTO;
@@ -18,74 +37,59 @@ import it.finanze.sanita.fse2.dr.dataquality.graph.AbstractGraphTest;
 import it.finanze.sanita.fse2.dr.dataquality.service.IValidationSRV;
 import it.finanze.sanita.fse2.dr.dataquality.service.impl.GraphSRV;
 import it.finanze.sanita.fse2.dr.dataquality.service.impl.SearchParamVerifierSRV;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.test.context.ActiveProfiles;
-
-import java.util.ArrayList;
-
-import static it.finanze.sanita.fse2.dr.dataquality.config.Constants.Profile.TEST;
-import static it.finanze.sanita.fse2.dr.dataquality.utility.FileUtility.getFileFromInternalResources;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ActiveProfiles(TEST)
 class ValidationTest extends AbstractGraphTest {
 
-	@Autowired
-	private IValidationSRV validations;
+    @Autowired
+    private IValidationSRV validations;
 
-	@SpyBean
-	private SearchParamVerifierSRV params;
+    @MockitoSpyBean
+    private SearchParamVerifierSRV params;
 
-	@SpyBean
-	private SrvQueryClient client;
+    @MockitoSpyBean
+    private SrvQueryClient client;
 
-	@SpyBean
-	private GraphSRV graphSRV;
+    @MockitoSpyBean
+    private GraphSRV graphSRV;
 
-	@Test
-	void isNotValid() {
-		// Retrieve file
-		String bundle = new String(getFileFromInternalResources("Referto_di_Laboratorio_caso_semplice.json"), UTF_8);
-		// Mock update
-		doNothing().when(params).tryToUpdateParamsIfNecessary();
-		// Perform validation (without search params)
-		ValidationResultDTO validationResult = validations.validateBundle(bundle);
-		// Verify
-		assertFalse(validationResult.isValid());
-	}
+    @Test
+    void isNotValid() {
+        // Retrieve file
+        String bundle = new String(getFileFromInternalResources("Referto_di_Laboratorio_caso_semplice.json"), UTF_8);
+        // Mock update
+        doNothing().when(params).tryToUpdateParamsIfNecessary();
+        // Perform validation (without search params)
+        ValidationResultDTO validationResult = validations.validateBundle(bundle);
+        // Verify
+        assertFalse(validationResult.isValid());
+    }
 
-	@Test
-	void isValidMock() {
-		// Retrieve file
-		String bundle = new String(getFileFromInternalResources("Referto_di_Laboratorio_caso_semplice.json"), UTF_8);
-		// Mock update
-		doNothing().when(params).tryToUpdateParamsIfNecessary();
-		// Mock traverse flow
-		doReturn(new ArrayList<>()).when(graphSRV).traverseGraph(anyString());
-		// Perform validation
-		ValidationResultDTO validationResult = validations.validateBundle(bundle);
-		// Verify
-		assertTrue(validationResult.isValid());
-	}
+    @Test
+    void isValidMock() {
+        // Retrieve file
+        String bundle = new String(getFileFromInternalResources("Referto_di_Laboratorio_caso_semplice.json"), UTF_8);
+        // Mock update
+        doNothing().when(params).tryToUpdateParamsIfNecessary();
+        // Mock traverse flow
+        doReturn(new ArrayList<>()).when(graphSRV).traverseGraph(anyString());
+        // Perform validation
+        ValidationResultDTO validationResult = validations.validateBundle(bundle);
+        // Verify
+        assertTrue(validationResult.isValid());
+    }
 
-	@Test
-	void isRefreshOk() {
-		// Retrieve file
-		String bundle = new String(getFileFromInternalResources("Referto_di_Laboratorio_caso_semplice.json"), UTF_8);
-		// Mock params
-		SearchParamsResponseDTO response = getSearchParamsResponse();
-		doReturn(response).when(client).getSearchParams();
-		// Perform validation to trigger refresh
-		validations.validateBundle(bundle);
-		// Verify
-		assertEquals(response, params.getResponse(), "Object mismatch");
-	}
+    @Test
+    void isRefreshOk() {
+        // Retrieve file
+        String bundle = new String(getFileFromInternalResources("Referto_di_Laboratorio_caso_semplice.json"), UTF_8);
+        // Mock params
+        SearchParamsResponseDTO response = getSearchParamsResponse();
+        doReturn(response).when(client).getSearchParams();
+        // Perform validation to trigger refresh
+        validations.validateBundle(bundle);
+        // Verify
+        assertEquals(response, params.getResponse(), "Object mismatch");
+    }
 }

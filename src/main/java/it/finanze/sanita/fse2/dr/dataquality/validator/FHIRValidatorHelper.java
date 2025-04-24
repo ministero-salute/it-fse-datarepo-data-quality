@@ -106,7 +106,7 @@ public class FHIRValidatorHelper {
 
     public OperationOutcome validate(byte[] bundle) {
         if (initialiting) {
-            throw new EngineInitException("Attenzione, l'engine è in fase di inizializzazione");
+            throw new EngineInitException("Attenzione, l'engine e' in fase di inizializzazione");
         }
 
         try (InputStream resourceStream = new ByteArrayInputStream(bundle)) {
