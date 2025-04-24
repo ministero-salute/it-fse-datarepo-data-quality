@@ -11,16 +11,17 @@
  */
 package it.finanze.sanita.fse2.dr.dataquality.scheduler;
 
-import it.finanze.sanita.fse2.dr.dataquality.dto.SearchParamsResponseDTO;
-import it.finanze.sanita.fse2.dr.dataquality.service.impl.SearchParamVerifierSRV;
-import lombok.extern.slf4j.Slf4j;
-import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import it.finanze.sanita.fse2.dr.dataquality.dto.SearchParamsResponseDTO;
+import it.finanze.sanita.fse2.dr.dataquality.service.impl.SearchParamVerifierSRV;
+import lombok.extern.slf4j.Slf4j;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 
 @Slf4j
 @Component

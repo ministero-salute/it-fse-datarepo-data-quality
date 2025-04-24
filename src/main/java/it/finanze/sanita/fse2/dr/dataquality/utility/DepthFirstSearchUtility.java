@@ -11,40 +11,40 @@
  */
 package it.finanze.sanita.fse2.dr.dataquality.utility;
 
-import it.finanze.sanita.fse2.dr.dataquality.dto.graph.EdgeDTO;
-import it.finanze.sanita.fse2.dr.dataquality.dto.graph.GraphDTO;
-import it.finanze.sanita.fse2.dr.dataquality.dto.graph.NodeDTO;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import static lombok.AccessLevel.PRIVATE;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static lombok.AccessLevel.*;
+import it.finanze.sanita.fse2.dr.dataquality.dto.graph.EdgeDTO;
+import it.finanze.sanita.fse2.dr.dataquality.dto.graph.GraphDTO;
+import it.finanze.sanita.fse2.dr.dataquality.dto.graph.NodeDTO;
+import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = PRIVATE)
 public class DepthFirstSearchUtility {
 
-	public static void traverse(GraphDTO graph) {
-		NodeDTO start = graph.getStartNode();
-		applyDFS(start, null, graph);
-	}
+    public static void traverse(GraphDTO graph) {
+        NodeDTO start = graph.getStartNode();
+        applyDFS(start, null, graph);
+    }
 
-	private static void applyDFS(NodeDTO currentNode, EdgeDTO fromEdge, GraphDTO graph) {
-		graph.setEdgeTraversed(fromEdge);
-		if (currentNode == null || currentNode.isTraversed()) return;
-		graph.setNodeTraversed(currentNode);
-		List<EdgeDTO> edgesToVisit = getEdgesToVisit(currentNode, graph);
-		edgesToVisit.forEach(edge -> applyDFS(edge.getTarget(), edge, graph));
-	}
+    private static void applyDFS(NodeDTO currentNode, EdgeDTO fromEdge, GraphDTO graph) {
+        graph.setEdgeTraversed(fromEdge);
+        if (currentNode == null || currentNode.isTraversed())
+            return;
+        graph.setNodeTraversed(currentNode);
+        List<EdgeDTO> edgesToVisit = getEdgesToVisit(currentNode, graph);
+        edgesToVisit.forEach(edge -> applyDFS(edge.getTarget(), edge, graph));
+    }
 
-	private static List<EdgeDTO> getEdgesToVisit(NodeDTO currentNode, GraphDTO graph) {
-		return graph
-				.getEdgesWithSource(currentNode)
-				.stream()
-				.filter(EdgeDTO::isNotTraversed)
-				.filter(EdgeDTO::isSearchParam)
-				.collect(Collectors.toList());
-	}
+    private static List<EdgeDTO> getEdgesToVisit(NodeDTO currentNode, GraphDTO graph) {
+        return graph
+                .getEdgesWithSource(currentNode)
+                .stream()
+                .filter(EdgeDTO::isNotTraversed)
+                .filter(EdgeDTO::isSearchParam)
+                .collect(Collectors.toList());
+    }
 
 }

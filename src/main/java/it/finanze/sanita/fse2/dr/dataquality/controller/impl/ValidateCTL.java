@@ -26,13 +26,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ValidateCTL implements IValidateCTL {
 
-	@Autowired
-	private IValidationSRV validationSRV;
-	  
-	@Override
-	public ValidationResultDTO validateBundle(FhirOperationDTO requestBody,HttpServletRequest request) {
-		log.info("Call validate bundle");
-		return validationSRV.validateBundle(requestBody.getJsonString());
-	}
+    @Autowired
+    private IValidationSRV validationSRV;
+
+    @Override
+    public ValidationResultDTO validateBundle(FhirOperationDTO requestBody, HttpServletRequest request) {
+        log.info("Call validate bundle");
+        return validationSRV.validateBundle(requestBody.getJsonString());
+    }
 
 }
