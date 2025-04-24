@@ -15,6 +15,24 @@ import it.finanze.sanita.fse2.dr.dataquality.dto.ValidationResultDTO;
 
 public interface IValidationSRV {
 
-	ValidationResultDTO validateBundle(String bundle);
-	
+    /**
+     * Validates the supplied FHIR Bundle JSON string and assesses its graph
+     * traversability.
+     *
+     * <p>
+     * This method first invokes the FHIR validator to perform normative R4
+     * validation on the bundle, collecting all ERROR- and FATAL-level issues.
+     * It then traverses the resource graph to identify any resources that were
+     * not reached during traversal.
+     *
+     * @param bundle the JSON representation of the FHIR Bundle to validate
+     * @return a {@link ValidationResultDTO} containing:
+     *         <ul>
+     *         <li>the list of normative R4 validation messages (errors and
+     *         fatals)</li>
+     *         <li>the list of resource references that were not traversed</li>
+     *         </ul>
+     */
+    ValidationResultDTO validateBundle(String bundle);
+
 }
