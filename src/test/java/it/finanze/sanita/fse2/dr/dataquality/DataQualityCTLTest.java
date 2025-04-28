@@ -95,8 +95,8 @@ class DataQualityCTLTest {
         ValidationResultDTO contentResponse = controller.validateBundle(fhirOperationDTO, request);
         // Assertions
         assertAll(
-                () -> assertTrue(contentResponse.isValid()),
-                () -> assertEquals("The JSON bundle has been validated", contentResponse.getMessage()));
+                () -> assertTrue(contentResponse.getValid()),
+                () -> assertEquals("The JSON bundle has been validated", contentResponse.createMessage()));
     }
 
     @Test
@@ -111,8 +111,8 @@ class DataQualityCTLTest {
         ValidationResultDTO contentResponse = controller.validateBundle(fhirOperationDTO, request);
         // Assertions
         assertAll(
-                () -> assertFalse(contentResponse.isValid()),
+                () -> assertFalse(contentResponse.getValid()),
                 () -> assertNotEquals("Unable to validate JSON bundle due to untraversable bundle resources: [test]",
-                        contentResponse.getMessage()));
+                        contentResponse.createMessage()));
     }
 }

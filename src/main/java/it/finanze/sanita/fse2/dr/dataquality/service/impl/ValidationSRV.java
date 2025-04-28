@@ -46,6 +46,7 @@ public class ValidationSRV implements IValidationSRV {
         // Create response
         result.getNormativeR4Messages().addAll(fhirValidator.getMessagesFromOutcome(oo));
         result.getNotTraversedResources().addAll(traverseGraph(jsonBundle));
+        result.initialize();
         return result;
     }
 

@@ -63,7 +63,7 @@ class ValidationTest extends AbstractGraphTest {
         // Perform validation (without search params)
         ValidationResultDTO validationResult = validations.validateBundle(bundle);
         // Verify
-        assertFalse(validationResult.isValid());
+        assertFalse(validationResult.getValid());
     }
 
     @Test
@@ -77,7 +77,7 @@ class ValidationTest extends AbstractGraphTest {
         // Perform validation
         ValidationResultDTO validationResult = validations.validateBundle(bundle);
         // Verify
-        assertTrue(validationResult.isValid());
+        assertTrue(validationResult.getValid());
     }
 
     @Test
