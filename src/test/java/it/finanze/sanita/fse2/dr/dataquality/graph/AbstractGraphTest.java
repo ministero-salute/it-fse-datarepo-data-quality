@@ -1,13 +1,17 @@
+/*
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ * 
+ * Copyright (C) 2023 Ministero della Salute
+ * 
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
 package it.finanze.sanita.fse2.dr.dataquality.graph;
 
-import it.finanze.sanita.fse2.dr.dataquality.dto.SearchParamResourceDTO;
-import it.finanze.sanita.fse2.dr.dataquality.dto.SearchParamsResponseDTO;
-import it.finanze.sanita.fse2.dr.dataquality.dto.graph.EdgeDTO;
-import it.finanze.sanita.fse2.dr.dataquality.dto.graph.GraphDTO;
-import it.finanze.sanita.fse2.dr.dataquality.dto.graph.NodeDTO;
-import it.finanze.sanita.fse2.dr.dataquality.dto.graph.ReferenceDTO;
-import org.hl7.fhir.r4.model.DocumentReference;
-import org.hl7.fhir.r4.model.Patient;
+import static it.finanze.sanita.fse2.dr.dataquality.dto.graph.GraphDTO.START_NODE;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,7 +19,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static it.finanze.sanita.fse2.dr.dataquality.dto.graph.GraphDTO.START_NODE;
+import org.hl7.fhir.r4.model.DocumentReference;
+import org.hl7.fhir.r4.model.Patient;
+
+import it.finanze.sanita.fse2.dr.dataquality.dto.SearchParamResourceDTO;
+import it.finanze.sanita.fse2.dr.dataquality.dto.SearchParamsResponseDTO;
+import it.finanze.sanita.fse2.dr.dataquality.dto.graph.EdgeDTO;
+import it.finanze.sanita.fse2.dr.dataquality.dto.graph.GraphDTO;
+import it.finanze.sanita.fse2.dr.dataquality.dto.graph.NodeDTO;
+import it.finanze.sanita.fse2.dr.dataquality.dto.graph.ReferenceDTO;
 
 public abstract class AbstractGraphTest {
 
@@ -47,12 +59,10 @@ public abstract class AbstractGraphTest {
 
     private List<EdgeDTO> generateEdges(List<NodeDTO> nodes) {
         List<EdgeDTO> edges = new ArrayList<>();
-        for(NodeDTO tmp: nodes) {
+        for (NodeDTO tmp : nodes) {
             edges.add(
-                new EdgeDTO(tmp, new ReferenceDTO(
-                    tmp.getResource(), TARGET_REF, TARGET_PATH)
-                )
-            );
+                    new EdgeDTO(tmp, new ReferenceDTO(
+                            tmp.getResource(), TARGET_REF, TARGET_PATH)));
         }
         return edges;
     }
@@ -78,8 +88,7 @@ public abstract class AbstractGraphTest {
 
     private List<String> getSearchParams() {
         return Arrays.asList(
-          "Encounter"
-        );
+                "Encounter");
     }
 
 }
