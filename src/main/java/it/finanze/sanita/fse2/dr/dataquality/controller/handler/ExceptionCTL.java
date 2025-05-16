@@ -11,12 +11,8 @@
  */
 package it.finanze.sanita.fse2.dr.dataquality.controller.handler;
 
-import brave.Tracer;
-import it.finanze.sanita.fse2.dr.dataquality.dto.LogTraceInfoDTO;
-import it.finanze.sanita.fse2.dr.dataquality.dto.error.ErrorBuilderDTO;
-import it.finanze.sanita.fse2.dr.dataquality.dto.error.base.ErrorResponseDTO;
-import it.finanze.sanita.fse2.dr.dataquality.exceptions.SchedulerRunningException;
-import lombok.extern.slf4j.Slf4j;
+import static it.finanze.sanita.fse2.dr.dataquality.config.Constants.Properties.MS_NAME;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -25,12 +21,21 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import io.opentelemetry.api.trace.SpanBuilder;
+import io.opentelemetry.api.trace.Tracer;
+import it.finanze.sanita.fse2.dr.dataquality.dto.LogTraceInfoDTO;
+import it.finanze.sanita.fse2.dr.dataquality.dto.error.ErrorBuilderDTO;
+import it.finanze.sanita.fse2.dr.dataquality.dto.error.base.ErrorResponseDTO;
+import it.finanze.sanita.fse2.dr.dataquality.exceptions.SchedulerRunningException;
+import lombok.extern.slf4j.Slf4j;
+
 @Slf4j
 @ControllerAdvice
 public class ExceptionCTL extends ResponseEntityExceptionHandler {
 
-    @Autowired
-    private Tracer tracer;
+	@Autowired
+	private Tracer tracer;
+
 
     @ExceptionHandler(SchedulerRunningException.class)
     protected ResponseEntity<ErrorResponseDTO> handleSchedulerRunningException(SchedulerRunningException ex) {
@@ -44,21 +49,16 @@ public class ExceptionCTL extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(out, headers, out.getStatus());
     }
 
-    /**
-     * Generate a new {@link LogTraceInfoDTO} instance
-     * @return The new instance
-     */
-    private LogTraceInfoDTO getLogTraceInfo() {
-        // Create instance
-        LogTraceInfoDTO out = new LogTraceInfoDTO(null, null);
-        // Verify if context is available
-        if (tracer.currentSpan() != null) {
-            out = new LogTraceInfoDTO(
-                tracer.currentSpan().context().spanIdString(),
-                tracer.currentSpan().context().traceIdString());
-        }
-        // Return the log trace
-        return out;
-    }
+    protected LogTraceInfoDTO getLogTraceInfo() {
+		LogTraceInfoDTO out = new LogTraceInfoDTO(null, null);
+		SpanBuilder spanbuilder = tracer.spanBuilder(MS_NAME);
+		
+		if (spanbuilder != null) {
+			out = new LogTraceInfoDTO(
+					spanbuilder.startSpan().getSpanContext().getSpanId(), 
+					spanbuilder.startSpan().getSpanContext().getTraceId());
+		}
+		return out;
+	}
 
 }

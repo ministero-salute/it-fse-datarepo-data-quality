@@ -12,7 +12,10 @@
 package it.finanze.sanita.fse2.dr.dataquality.exceptions;
 
 public class SchedulerRunningException extends IllegalStateException {
-    /**
+	
+    private static final long serialVersionUID = -6195014196545102955L;
+
+	/**
      * Constructs an IllegalStateException with the specified detail
      * message.  A detail message is a String that describes this particular
      * exception.

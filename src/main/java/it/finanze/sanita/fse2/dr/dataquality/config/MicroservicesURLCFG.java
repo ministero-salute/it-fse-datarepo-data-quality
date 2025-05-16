@@ -25,6 +25,6 @@ public class MicroservicesURLCFG {
 	/**
 	 * Srv Query Host 
 	 */
-	@Value("${ms.url.eds-srv-query.host}")
+	@Value("${ms.url.udp-srv-query.host}")
 	private String edsQueryHost;
 }

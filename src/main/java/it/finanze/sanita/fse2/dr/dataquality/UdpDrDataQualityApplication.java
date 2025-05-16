@@ -18,10 +18,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
-public class EdsDrDataQualityApplication {
+public class UdpDrDataQualityApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(EdsDrDataQualityApplication.class, args);
+		SpringApplication.run(UdpDrDataQualityApplication.class, args);
 	}
 
 	/**

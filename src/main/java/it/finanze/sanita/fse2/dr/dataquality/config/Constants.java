@@ -38,5 +38,10 @@ public final class Constants {
 		public static final String SRV_QUERY_RESPONSE = "{} status returned from eds";
 
 	}
+	
+	@NoArgsConstructor(access = AccessLevel.PRIVATE)
+	public static final class Properties {
+		public static final String MS_NAME = "udp-data-quality";
+	}
 
 }
