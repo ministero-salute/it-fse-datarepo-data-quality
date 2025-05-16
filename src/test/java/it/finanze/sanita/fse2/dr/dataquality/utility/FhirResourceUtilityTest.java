@@ -11,8 +11,8 @@ import org.hl7.fhir.r4.model.IdType;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import it.finanze.sanita.fse2.dr.dataquality.config.Constants;
 
@@ -20,16 +20,16 @@ import it.finanze.sanita.fse2.dr.dataquality.config.Constants;
 @ActiveProfiles(Constants.Profile.TEST)
 class FhirResourceUtilityTest {
     
-    @MockBean
+    @MockitoBean
     private BundleEntryComponent bundleEntry;
 
-    @MockBean
+    @MockitoBean
     private IBaseReference baseReference;
 
-    @MockBean
+    @MockitoBean
     private IBaseResource baseResource;
 
-    @MockBean
+    @MockitoBean
     private IIdType idType;
 
     @Test

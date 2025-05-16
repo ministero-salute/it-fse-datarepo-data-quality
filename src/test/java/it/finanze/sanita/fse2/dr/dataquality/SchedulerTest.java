@@ -11,15 +11,6 @@
  */
 package it.finanze.sanita.fse2.dr.dataquality;
 
-import it.finanze.sanita.fse2.dr.dataquality.scheduler.SearchParamScheduler;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
-
 import static it.finanze.sanita.fse2.dr.dataquality.config.Constants.Profile.TEST;
 import static it.finanze.sanita.fse2.dr.dataquality.utility.RouteUtility.API_REFRESH_SCHEDULER;
 import static org.mockito.Mockito.doReturn;
@@ -29,12 +20,22 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
+import org.springframework.test.web.servlet.MockMvc;
+
+import it.finanze.sanita.fse2.dr.dataquality.scheduler.SearchParamScheduler;
+
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ActiveProfiles(TEST)
 @AutoConfigureMockMvc
 class SchedulerTest {
 
-	@SpyBean
+	@MockitoSpyBean
 	private SearchParamScheduler scheduler;
 
 	@Autowired

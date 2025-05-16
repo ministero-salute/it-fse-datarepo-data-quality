@@ -11,8 +11,6 @@
  */
 package it.finanze.sanita.fse2.dr.dataquality.controller;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,6 +24,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import it.finanze.sanita.fse2.dr.dataquality.dto.ValidationResultDTO;
 import it.finanze.sanita.fse2.dr.dataquality.dto.request.FhirOperationDTO;
+import jakarta.servlet.http.HttpServletRequest;
 
 @RequestMapping(path = "/v1")
 @Tag(name = "Validazione")

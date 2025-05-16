@@ -11,6 +11,25 @@
  */
 package it.finanze.sanita.fse2.dr.dataquality;
 
+import static it.finanze.sanita.fse2.dr.dataquality.config.Constants.Profile.TEST;
+import static it.finanze.sanita.fse2.dr.dataquality.utility.FileUtility.getFileFromInternalResources;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+
+import java.util.ArrayList;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
+
 import it.finanze.sanita.fse2.dr.dataquality.client.impl.SrvQueryClient;
 import it.finanze.sanita.fse2.dr.dataquality.dto.SearchParamsResponseDTO;
 import it.finanze.sanita.fse2.dr.dataquality.dto.ValidationResultDTO;
@@ -18,21 +37,6 @@ import it.finanze.sanita.fse2.dr.dataquality.graph.AbstractGraphTest;
 import it.finanze.sanita.fse2.dr.dataquality.service.IValidationSRV;
 import it.finanze.sanita.fse2.dr.dataquality.service.impl.GraphSRV;
 import it.finanze.sanita.fse2.dr.dataquality.service.impl.SearchParamVerifierSRV;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.test.context.ActiveProfiles;
-
-import java.util.ArrayList;
-
-import static it.finanze.sanita.fse2.dr.dataquality.config.Constants.Profile.TEST;
-import static it.finanze.sanita.fse2.dr.dataquality.utility.FileUtility.getFileFromInternalResources;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ActiveProfiles(TEST)
@@ -41,13 +45,13 @@ class ValidationTest extends AbstractGraphTest {
 	@Autowired
 	private IValidationSRV validations;
 
-	@SpyBean
+	@MockitoSpyBean
 	private SearchParamVerifierSRV params;
 
-	@SpyBean
+	@MockitoSpyBean
 	private SrvQueryClient client;
 
-	@SpyBean
+	@MockitoSpyBean
 	private GraphSRV graphSRV;
 
 	@Test

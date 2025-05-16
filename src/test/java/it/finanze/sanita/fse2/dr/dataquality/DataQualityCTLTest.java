@@ -26,8 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,11 +33,11 @@ import org.springframework.boot.actuate.health.Status;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import it.finanze.sanita.fse2.dr.dataquality.config.Constants;
@@ -49,6 +47,7 @@ import it.finanze.sanita.fse2.dr.dataquality.dto.request.FhirOperationDTO;
 import it.finanze.sanita.fse2.dr.dataquality.service.impl.GraphSRV;
 import it.finanze.sanita.fse2.dr.dataquality.utility.FileUtility;
 import it.finanze.sanita.fse2.dr.dataquality.utility.JsonUtility;
+import jakarta.servlet.http.HttpServletRequest;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
@@ -66,7 +65,7 @@ class DataQualityCTLTest {
 	@Autowired
 	private ValidateCTL controller;
 
-	@MockBean
+	@MockitoBean
 	private GraphSRV graphSRV;
 
 	static final String DOCUMENT_TEST_JSON_STRING_PUT = "{\"jsonString\": \"testPut\"}";
