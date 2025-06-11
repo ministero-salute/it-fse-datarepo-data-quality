@@ -35,11 +35,14 @@ class FhirResourceUtilityTest {
     private BundleEntryComponent bundleEntry;
 
     @MockitoBean
+    @MockitoBean
     private IBaseReference baseReference;
 
     @MockitoBean
+    @MockitoBean
     private IBaseResource baseResource;
 
+    @MockitoBean
     @MockitoBean
     private IIdType idType;
 
