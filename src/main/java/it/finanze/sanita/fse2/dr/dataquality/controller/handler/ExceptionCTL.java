@@ -36,7 +36,6 @@ public class ExceptionCTL extends ResponseEntityExceptionHandler {
 	@Autowired
 	private Tracer tracer;
 
-
     @ExceptionHandler(SchedulerRunningException.class)
     protected ResponseEntity<ErrorResponseDTO> handleSchedulerRunningException(SchedulerRunningException ex) {
         // Log me
@@ -49,6 +48,7 @@ public class ExceptionCTL extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(out, headers, out.getStatus());
     }
 
+
     protected LogTraceInfoDTO getLogTraceInfo() {
 		LogTraceInfoDTO out = new LogTraceInfoDTO(null, null);
 		SpanBuilder spanbuilder = tracer.spanBuilder(MS_NAME);
@@ -59,6 +59,6 @@ public class ExceptionCTL extends ResponseEntityExceptionHandler {
 					spanbuilder.startSpan().getSpanContext().getTraceId());
 		}
 		return out;
-	}
-
+    }
 }
+

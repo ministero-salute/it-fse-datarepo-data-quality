@@ -38,6 +38,7 @@ import io.swagger.v3.oas.models.servers.Server;
 }, title = "UDP - Data quality", version = "1.0.0", description = "UDP - Data quality", termsOfService = "${docs.info.termsOfService}", contact = @Contact(name = "${docs.info.contact.name}", url = "${docs.info.contact.url}", email = "${docs.info.contact.mail}")))
 public class OpenApiCFG {
 
+
     public OpenApiCFG() {
     }
 

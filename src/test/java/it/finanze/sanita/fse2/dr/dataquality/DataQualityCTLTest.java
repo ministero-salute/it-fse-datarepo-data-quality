@@ -56,8 +56,8 @@ import jakarta.servlet.http.HttpServletRequest;
 @DisplayName("DataQuality Controller Unit Test")
 class DataQualityCTLTest {
 
-    @Autowired
-    private HttpServletRequest request;
+        @Autowired
+        private HttpServletRequest request;
 
     @Autowired
     private MockMvc mvc;
@@ -65,7 +65,7 @@ class DataQualityCTLTest {
     @Autowired
     private ValidateCTL controller;
 
-    @MockitoBean
+    @Autowired
     private GraphSRV graphSRV;
 
     static final String DOCUMENT_TEST_JSON_STRING_PUT = "{\"jsonString\": \"testPut\"}";
@@ -73,46 +73,53 @@ class DataQualityCTLTest {
 
     @Test
     void livenessCheckCtlTest() throws Exception {
-        MockHttpServletResponse response = mvc.perform(get("/status")
-                .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpectAll(status().isOk()).andReturn().getResponse();
+            MockHttpServletResponse response = mvc.perform(get("/status")
+                            .contentType(MediaType.APPLICATION_JSON_VALUE))
+                            .andExpectAll(status().isOk()).andReturn().getResponse();
 
-        Map contentResponse = JsonUtility.jsonToObject(new String(response.getContentAsByteArray()), Map.class);
+
+        Map contentResponse = JsonUtility.jsonToObject(new String(response.getContentAsByteArray()),
+                        Map.class);
         assertTrue(contentResponse.containsKey("status"));
         assertEquals(Status.UP.getCode(), contentResponse.get("status"));
-    }
+}
 
     @Test
     void qualityTest() throws Exception {
-        String bundle = new String(
-                FileUtility.getFileFromInternalResources("Referto_di_Laboratorio_caso_semplice.json"),
-                StandardCharsets.UTF_8);
-        FhirOperationDTO fhirOperationDTO = new FhirOperationDTO();
-        fhirOperationDTO.setJsonString(bundle);
-        // Mock
-        when(graphSRV.traverseGraph(anyString())).thenReturn(new ArrayList<String>());
-        // Perform validateBundle
-        ValidationResultDTO contentResponse = controller.validateBundle(fhirOperationDTO, request);
-        // Assertions
-        assertAll(
-                () -> assertTrue(contentResponse.getValid()),
-                () -> assertEquals("The JSON bundle has been validated", contentResponse.createMessage()));
-    }
+            String bundle = new String(
+                            FileUtility.getFileFromInternalResources(
+                                            "Referto_di_Laboratorio_caso_semplice.json"),
+                            StandardCharsets.UTF_8);
+            FhirOperationDTO fhirOperationDTO = new FhirOperationDTO();
+            fhirOperationDTO.setJsonString(bundle);
+            // Mock
+            when(graphSRV.traverseGraph(anyString())).thenReturn(new ArrayList<String>());
+            // Perform validateBundle
+            ValidationResultDTO contentResponse =
+                            controller.validateBundle(fhirOperationDTO, request);
+            // Assertions
+            assertAll(
+                        () -> assertTrue(contentResponse.isValid()),
+                        () -> assertEquals("The JSON bundle has been validated",
+                                        contentResponse.getMessage()));
+}
 
     @Test
     void qualityErrorTest() throws Exception {
-        FhirOperationDTO fhirOperationDTO = new FhirOperationDTO();
-        fhirOperationDTO.setJsonString("error bundle");
-        // Mock
-        List<String> traverseList = new ArrayList<>();
-        traverseList.add("test");
-        when(graphSRV.traverseGraph(anyString())).thenReturn(traverseList);
-        // Perform validateBundle
-        ValidationResultDTO contentResponse = controller.validateBundle(fhirOperationDTO, request);
-        // Assertions
-        assertAll(
-                () -> assertFalse(contentResponse.getValid()),
-                () -> assertNotEquals("Unable to validate JSON bundle due to untraversable bundle resources: [test]",
-                        contentResponse.createMessage()));
-    }
+            FhirOperationDTO fhirOperationDTO = new FhirOperationDTO();
+            fhirOperationDTO.setJsonString("error bundle");
+            // Mock
+            List<String> traverseList = new ArrayList<>();
+            traverseList.add("test");
+            when(graphSRV.traverseGraph(anyString())).thenReturn(traverseList);
+            // Perform validateBundle
+            ValidationResultDTO contentResponse =
+                            controller.validateBundle(fhirOperationDTO, request);
+            // Assertions
+            assertAll(
+                        () -> assertFalse(contentResponse.isValid()),
+                        () -> assertNotEquals(
+                                        "Unable to validate JSON bundle due to untraversable bundle resources: [test]",
+                                        contentResponse.getMessage()));
+}
 }

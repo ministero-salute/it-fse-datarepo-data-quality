@@ -21,10 +21,9 @@ public class EdgeDTO implements IGraphResourceDTO {
 	private NodeDTO target;
 	private String path;
 	private boolean traversed;
-	private boolean searchParam;
 
 	public EdgeDTO(NodeDTO source, ReferenceDTO reference) {
-		this(source, new NodeDTO(reference), reference.getPath(), false, false);
+		this(source, new NodeDTO(reference), reference.getPath(), false);
 	}
 
 	public boolean isTraversable() {

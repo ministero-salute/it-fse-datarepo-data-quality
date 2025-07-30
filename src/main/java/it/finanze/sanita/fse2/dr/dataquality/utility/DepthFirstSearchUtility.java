@@ -13,8 +13,8 @@ package it.finanze.sanita.fse2.dr.dataquality.utility;
 
 import static lombok.AccessLevel.PRIVATE;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import it.finanze.sanita.fse2.dr.dataquality.dto.graph.EdgeDTO;
 import it.finanze.sanita.fse2.dr.dataquality.dto.graph.GraphDTO;
@@ -23,7 +23,6 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = PRIVATE)
 public class DepthFirstSearchUtility {
-
     public static void traverse(GraphDTO graph) {
         NodeDTO start = graph.getStartNode();
         applyDFS(start, null, graph);
@@ -35,16 +34,18 @@ public class DepthFirstSearchUtility {
             return;
         graph.setNodeTraversed(currentNode);
         List<EdgeDTO> edgesToVisit = getEdgesToVisit(currentNode, graph);
-        edgesToVisit.forEach(edge -> applyDFS(edge.getTarget(), edge, graph));
+        for (EdgeDTO edge : edgesToVisit) {
+            applyDFS(edge.getTarget(), edge, graph);
+        }
     }
 
     private static List<EdgeDTO> getEdgesToVisit(NodeDTO currentNode, GraphDTO graph) {
-        return graph
-                .getEdgesWithSource(currentNode)
-                .stream()
-                .filter(EdgeDTO::isNotTraversed)
-                .filter(EdgeDTO::isSearchParam)
-                .collect(Collectors.toList());
+        List<EdgeDTO> result = new ArrayList<>();
+        for (EdgeDTO edge : graph.getEdgesWithSource(currentNode)) {
+            if (edge.isNotTraversed()) {
+                result.add(edge);
+            }
+        }
+        return result;
     }
-
 }

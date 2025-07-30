@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.hl7.fhir.r4.model.Bundle;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import it.finanze.sanita.fse2.dr.dataquality.dto.graph.EdgeDTO;
@@ -24,25 +23,16 @@ import it.finanze.sanita.fse2.dr.dataquality.dto.graph.IGraphResourceDTO;
 import it.finanze.sanita.fse2.dr.dataquality.dto.graph.NodeDTO;
 import it.finanze.sanita.fse2.dr.dataquality.helper.FHIRR4Helper;
 import it.finanze.sanita.fse2.dr.dataquality.service.IGraphSRV;
-import it.finanze.sanita.fse2.dr.dataquality.service.ISearchParamVerifierSRV;
 import it.finanze.sanita.fse2.dr.dataquality.utility.BundleUtility;
 import it.finanze.sanita.fse2.dr.dataquality.utility.DepthFirstSearchUtility;
 
 @Service
 public class GraphSRV implements IGraphSRV {
 
-    @Autowired
-    private ISearchParamVerifierSRV service;
 
     public List<String> traverseGraph(String jsonBundle) {
-        // Try to update if search params are empty, otherwise throw for as an illegal
-        // state exception
-        service.tryToUpdateParamsIfNecessary();
-        // Execute
-        return traverse(jsonBundle)
-                .stream()
-                .map(IGraphResourceDTO::toString)
-                .collect(Collectors.toList());
+        List<String> s = traverse(jsonBundle).stream().map(IGraphResourceDTO::toString).collect(Collectors.toList());
+        return s;
     }
 
     private List<IGraphResourceDTO> traverse(String jsonBundle) {
@@ -79,13 +69,9 @@ public class GraphSRV implements IGraphSRV {
                 .stream()
                 .map(reference -> new EdgeDTO(node, reference))
                 .filter(EdgeDTO::isTraversable)
-                .peek(this::setSearchParam)
                 .collect(Collectors.toList());
     }
 
-    private void setSearchParam(EdgeDTO edge) {
-        boolean searchParam = service.isSearchParam(edge.getSource().getType(), edge.getPath());
-        edge.setSearchParam(searchParam);
-    }
+
 
 }

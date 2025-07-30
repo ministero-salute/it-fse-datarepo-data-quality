@@ -11,38 +11,29 @@
  */
 package it.finanze.sanita.fse2.dr.dataquality.dto;
 
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.Getter;
-import lombok.Setter;
-
 @Getter
-@Setter
 public final class ValidationResultDTO {
 
-    private boolean isValid;
-    private String message;
     private final List<String> normativeR4Messages;
     private final List<String> notTraversedResources;
-
-    public void initialize() {
-        this.isValid = getValid();
-        this.message = createMessage();
-    }
 
     public ValidationResultDTO() {
         this.normativeR4Messages = new ArrayList<>();
         this.notTraversedResources = new ArrayList<>();
     }
 
-    public boolean getValid() {
+    public boolean isValid() {
         return getNormativeR4Messages().isEmpty() && getNotTraversedResources().isEmpty();
     }
 
-    public String createMessage() {
+    public String getMessage() {
         String out = "The JSON bundle has been validated";
-        return getValid() ? out : getErrorMessage(normativeR4Messages, notTraversedResources);
+        return isValid() ? out : getErrorMessage(normativeR4Messages, notTraversedResources);
     }
 
     private String getErrorMessage(List<String> normative, List<String> graph) {
